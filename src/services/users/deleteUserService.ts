@@ -1,5 +1,5 @@
 
-import prismaClient from "../prisma"
+import prismaClient from "../../prisma"
 
 interface DeleteUserProps {
     id: string
