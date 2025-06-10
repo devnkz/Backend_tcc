@@ -22,4 +22,8 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new LoginUserController().handle(request, reply)
     })
 
+    fastify.put("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new LoginUserController().handle(request, reply)
+    })
+
 }
