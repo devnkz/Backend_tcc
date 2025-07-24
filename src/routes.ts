@@ -3,6 +3,8 @@ import { CreateUserController } from './controllers/users/createUserController';
 import { ListUserController } from './controllers/users/listUserController';
 import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
+import { UpdateUserController } from './controllers/users/updateUserController';
+import { PrismaClient } from "@prisma/client";
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
 
@@ -23,7 +25,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     })
 
     fastify.put("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new LoginUserController().handle(request, reply)
+        return new UpdateUserController().handle(request, reply)
     })
 
 }

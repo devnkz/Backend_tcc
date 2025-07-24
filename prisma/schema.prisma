@@ -7,9 +7,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model user {
   id        String   @id @default(uuid())
   name      String
+  apelido   String
   email     String   @unique
+  senha     String
   createdAt DateTime @default(now())
+}
+
+model pergunta {
+  id            String   @id @default(uuid())
+  fkIdUsuario   String
+  pergunta      String
+  fkIdComponent String
+  createdAt     DateTime @default(now())
+}
+
+model componente {
+  id             String @id @default(uuid())
+  nomeComponente String
+  fkIdCurso      String
+}
+
+model tag {
+  id           String @id @default(uuid())
+  nomeTag      String
+  descricaoTag String
+}
+
+model artigo {
+  id             String @id @default(uuid())
+  fkIdComponente String
+  nomeArtigo     String
+  textoArtigo    String
+}
+
+model resposta {
+  id           String   @id @default(uuid())
+  fkIdPergunta String
+  fkIdUsuario  String
+  resposta     String
+  createdAt    DateTime @default(now())
+}
+
+model comentario {
+  id           String   @id @default(uuid())
+  fkIdResposta String
+  fkIdUsuario  String
+  comentario   String
+  createdAt    DateTime @default(now())
+}
+
+model grupo {
+  id             String @id @default(uuid())
+  nomeGrupo      String
+  fkIdComponente String
+}
+
+model tipousuario {
+  id              String @id @default(uuid())
+  nomeTipoUsuario String
+}
+
+model curso {
+  id        String @id @default(uuid())
+  nomeCurso String
 }
