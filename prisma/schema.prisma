@@ -8,13 +8,16 @@ datasource db {
 }
 
 model user {
-  id        String   @id @default(uuid())
-  name      String
-  apelido   String
-  email     String   @unique
-  senha     String
-  createdAt DateTime @default(now())
+  id              String   @id @default(uuid())
+  name            String
+  apelido         String
+  email           String   @unique
+  senha           String
+  fkIdTipoUsuario String
+  createdAt       DateTime @default(now())
 }
+
+// Feito 
 
 model pergunta {
   id            String   @id @default(uuid())
@@ -23,6 +26,8 @@ model pergunta {
   fkIdComponent String
   createdAt     DateTime @default(now())
 }
+
+// Feito
 
 model componente {
   id             String @id @default(uuid())
@@ -69,6 +74,8 @@ model tipousuario {
   id              String @id @default(uuid())
   nomeTipoUsuario String
 }
+
+// Feito  
 
 model curso {
   id        String @id @default(uuid())
