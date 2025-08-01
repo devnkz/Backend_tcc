@@ -1,4 +1,5 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
+import { verifyToken } from './utils/verifyToken';
 
 //imports Usuarios
 
@@ -70,6 +71,12 @@ import { UpdateCursoController } from './controllers/curso/updateCurso';
 import { DeleteCursoController } from './controllers/curso/deleteCurso';
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+
+    //Rotas de Verificação de Token
+
+    fastify.post("/verifyToken", async (request: FastifyRequest, reply: FastifyReply) => {
+        return verifyToken(request, reply);
+    });
 
     //Rotas de Usuario
 
