@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { ListPeguntaService } from "../../services/pergunta/listPergunta";
+import { ListPerguntaService } from "../../services/pergunta/listPergunta";
 
 class ListPeguntaController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
-        const listPergunta = new ListPeguntaService();
+        const listPergunta = new ListPerguntaService();
         const pergunta = await listPergunta.execute()
 
         reply.send(pergunta)
