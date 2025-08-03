@@ -6,7 +6,7 @@ class ListPerguntaService {
       orderBy: { createdAt: "desc" },
       include: {
         user: {
-          select: { name: true },
+          select: { name: true, apelido: true },
         },
         componente: {
           select: { nomeComponente: true },
@@ -15,12 +15,15 @@ class ListPerguntaService {
     });
 
     const perguntasFormatadas = perguntas.map(p => ({
-      id: p.id,
-      pergunta: p.pergunta,
-      usuario: p.user.name,
-      materia: p.componente.nomeComponente,
-      criadaEm: p.createdAt,
-    }));
+    id: p.id,
+    pergunta: p.pergunta,
+    usuario: {
+      name: p.user.name,
+      apelido: p.user.apelido
+    },
+    materia: p.componente.nomeComponente,
+    criadaEm: p.createdAt,
+}));
 
     return perguntasFormatadas;
   }
