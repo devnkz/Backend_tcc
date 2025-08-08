@@ -5,6 +5,7 @@ import { verifyToken } from './utils/verifyToken';
 
 import { CreateUserController } from './controllers/users/createUserController';
 import { ListUserController } from './controllers/users/listUserController';
+import { ListUserIdController } from './controllers/users/listUserIdController';
 import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
 import { UpdateUserController } from './controllers/users/updateUserController';
@@ -86,6 +87,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.get("/user", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListUserController().handle(request, reply)
+    })
+
+    fastify.get("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListUserIdController().handle(request, reply)
     })
 
     fastify.delete("/user", async (request: FastifyRequest, reply: FastifyReply) => {
