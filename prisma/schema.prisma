@@ -8,14 +8,15 @@ datasource db {
 }
 
 model user {
-  id              String     @id @default(uuid())
+  id              String      @id @default(uuid())
   name            String
   apelido         String
-  email           String     @unique
+  email           String      @unique
   senha           String
   fkIdTipoUsuario String
-  createdAt       DateTime   @default(now())
+  createdAt       DateTime    @default(now())
   pergunta        pergunta[]
+  grupos          grupoUser[]
 }
 
 // Feito 
@@ -70,9 +71,21 @@ model comentario {
 }
 
 model grupo {
-  id             String @id @default(uuid())
+  id             String      @id @default(uuid())
   nomeGrupo      String
   fkIdComponente String
+  membros        grupoUser[]
+}
+
+model grupoUser {
+  id      String @id @default(uuid())
+  grupoId String
+  userId  String
+
+  grupo grupo @relation(fields: [grupoId], references: [id])
+  user  user  @relation(fields: [userId], references: [id])
+
+  @@unique([grupoId, userId])
 }
 
 model tipousuario {

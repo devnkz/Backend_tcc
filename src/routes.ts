@@ -1,6 +1,9 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { verifyToken } from './utils/verifyToken';
 
+// Import da autenticação
+import { authenticate } from './middleware/auth';
+
 //imports Usuarios
 
 import { CreateUserController } from './controllers/users/createUserController';
@@ -14,6 +17,7 @@ import { UpdateUserController } from './controllers/users/updateUserController';
 
 import { CreatePerguntaController } from './controllers/pergunta/createPergunta';
 import { ListPeguntaController } from './controllers/pergunta/listPergunta';
+import { ListPerguntaByIdUserController } from './controllers/pergunta/listPerguntaByIdUser';
 import { DeletePerguntaController } from './controllers/pergunta/deletePergunta';
 import { UpdatePerguntaController } from './controllers/pergunta/updatePergunta';
 
@@ -60,6 +64,7 @@ import { DeleteComentarioController } from './controllers/comentario/deleteComen
 //imports Grupo
 
 import { CreateGrupoController } from './controllers/grupo/createGrupo';
+import { ListGruposDoUsuarioController } from './controllers/grupo/listGrupoByUser';
 import { ListGrupoController } from './controllers/grupo/listGrupo';
 import { UpdateGrupoController } from './controllers/grupo/updateGrupo';
 import { DeleteGrupoController } from './controllers/grupo/deleteGrupo';
@@ -124,6 +129,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.get("/pergunta", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListPeguntaController().handle(request, reply)
     })
+
+    fastify.get("/pergunta/usuario/:id", async (request, reply) => {
+        return new ListPerguntaByIdUserController().handle(request, reply);
+    });
 
     fastify.delete("/pergunta", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeletePerguntaController().handle(request, reply)
@@ -225,21 +234,26 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     //Rotas de Grupo
 
-    fastify.post("/grupo", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new CreateGrupoController().handle(request, reply)
-    })
+    fastify.post("/grupo", { preHandler: [authenticate] }, async (request, reply) => {
+        return new CreateGrupoController().handle(request, reply);
+    });
 
-    fastify.get("/grupo", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new ListGrupoController().handle(request, reply)
-    })
+    fastify.get("/grupos", { preHandler: [authenticate] }, async (req, reply) => {
+        return new ListGruposDoUsuarioController().handle(req, reply);
+    });
 
-    fastify.put("/grupo/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new UpdateGrupoController().handle(request, reply)
-    })
+    fastify.get("/grupo/:id", { preHandler: [authenticate] }, async (request, reply) => {
+        return new ListGrupoController().handle(request, reply);
+    });
 
-    fastify.delete("/grupo/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new DeleteGrupoController().handle(request, reply)
-    })
+    fastify.put("/grupo/:id", { preHandler: [authenticate] }, async (request, reply) => {
+        return new UpdateGrupoController().handle(request, reply);
+    });
+
+    fastify.delete("/grupo/:id", { preHandler: [authenticate] }, async (request, reply) => {
+        return new DeleteGrupoController().handle(request, reply);
+    });
+
 
     //Rotas de Curso
 

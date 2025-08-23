@@ -1,25 +1,18 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createGrupoService } from "../../services/grupo/createGrupoService";
-
-interface CreateGrupoBody {
-  nomeGrupo: string;
-  fkIdComponente: string;
-}
-
+import { CreateGrupoService } from "../../services/grupo/createGrupoService";
 class CreateGrupoController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { nomeGrupo, fkIdComponente } = request.body as CreateGrupoBody;
+    const { nomeGrupo, fkIdComponente, membrosIds } = request.body as {
+      nomeGrupo: string;
+      fkIdComponente: string;
+      membrosIds: string[];
+    };
 
-    const createGrupo = new createGrupoService();
+    const service = new CreateGrupoService();
+    const grupo = await service.execute(nomeGrupo, fkIdComponente, membrosIds);
 
-    try {
-      const grupo = await createGrupo.execute({ nomeGrupo, fkIdComponente });
-      return reply.send(grupo);
-    } catch (error) {
-      console.error("Erro ao criar grupo:", error);
-      return reply.status(500).send({ error: "Erro interno ao criar grupo." });
-    }
+    return reply.send(grupo);
   }
 }
 
-export { CreateGrupoController }; 
+export { CreateGrupoController };

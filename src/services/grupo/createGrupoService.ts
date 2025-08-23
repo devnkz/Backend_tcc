@@ -1,20 +1,17 @@
 import prismaClient from "../../prisma";
 
-interface CreateGrupoProps {
-  nomeGrupo: string;
-  fkIdComponente: string;
-}
-
-class createGrupoService {
-  async execute({ nomeGrupo, fkIdComponente }: CreateGrupoProps) {
-    if (!nomeGrupo || !fkIdComponente) {
-      throw new Error("Informações faltando");
-    }
-
+class CreateGrupoService {
+  async execute(nomeGrupo: string, fkIdComponente: string, membrosIds: string[]) {
     const grupo = await prismaClient.grupo.create({
       data: {
         nomeGrupo,
         fkIdComponente,
+        membros: {
+          create: membrosIds.map(userId => ({ userId })),
+        },
+      },
+      include: {
+        membros: { include: { user: true } },
       },
     });
 
@@ -22,4 +19,4 @@ class createGrupoService {
   }
 }
 
-export { createGrupoService }; 
+export { CreateGrupoService };
