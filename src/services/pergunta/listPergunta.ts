@@ -6,7 +6,7 @@ class ListPerguntaService {
       orderBy: { createdAt: "desc" },
       include: {
         user: {
-          select: { name: true, apelido: true },
+          select: { id: true, name: true, apelido: true },
         },
         componente: {
           select: { nomeComponente: true },
@@ -18,6 +18,7 @@ class ListPerguntaService {
     id: p.id,
     pergunta: p.pergunta,
     usuario: {
+      id: p.user.id,
       name: p.user.name,
       apelido: p.user.apelido
     },
