@@ -1,35 +1,46 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import prismaClient from "../../prisma";
 
 interface LoginUserProps {
-    email: string,
-    senha:string
+  email: string;
+  senha: string;
 }
 
-class LoginUserService{
-    async execute({email, senha} : LoginUserProps){
+class LoginUserService {
+  async execute({ email, senha }: LoginUserProps) {
+    // Buscar o usuário pelo email
+    const findUser = await prismaClient.user.findFirst({
+      where: {
+        email: email
+      }
+    });
 
-        const findUser = await prismaClient.user.findFirst({
-            where: {
-                email: email,
-                senha: senha
-            }
-        })
-
-        console.log(findUser)
-
-        if(!findUser){
-            throw new Error("Usuário não encontrado")
-        }
-
-         const token = jwt.sign(
-            { id: findUser.id, name: findUser.name, apelido: findUser.apelido, email: findUser.email, senha: findUser.senha },
-            process.env.JWT_SECRET || "secreto",
-            { expiresIn: "48h" }
-        );
-
-        return { user: findUser, token };
+    if (!findUser) {
+      throw new Error("Usuário não encontrado");
     }
+
+    // Verificar se a senha fornecida bate com a senha criptografada
+    const isPasswordValid = await bcrypt.compare(senha, findUser.senha);
+
+    if (!isPasswordValid) {
+      throw new Error("Senha incorreta");
+    }
+
+    // Gerar o token JWT
+    const token = jwt.sign(
+      {
+        id: findUser.id,
+        name: findUser.name,
+        apelido: findUser.apelido,
+        email: findUser.email
+      },
+      process.env.JWT_SECRET || "secreto",
+      { expiresIn: "48h" }
+    );
+
+    return { user: findUser, token };
+  }
 }
 
-export {LoginUserService}
+export { LoginUserService };
