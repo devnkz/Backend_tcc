@@ -11,6 +11,7 @@ model user {
   id              String      @id @default(uuid())
   name            String
   apelido         String
+  fotoPerfil      String?
   email           String      @unique
   senha           String
   fkIdTipoUsuario String

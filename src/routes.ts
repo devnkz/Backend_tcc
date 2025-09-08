@@ -1,5 +1,6 @@
 import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
 import { verifyToken } from './utils/verifyToken';
+import { upload } from './config/multer';
 
 // Import da autenticação
 import { authenticate } from './middleware/auth';
@@ -12,6 +13,7 @@ import { ListUserIdController } from './controllers/users/listUserIdController';
 import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
 import { UpdateUserController } from './controllers/users/updateUserController';
+import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfilController ';
 
 //imports Perguntas
 
@@ -109,6 +111,10 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.put("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new UpdateUserController().handle(request, reply)
     })
+
+    fastify.post("/user/:id/foto", { preHandler: upload.single("foto") }, async (request, reply) => {
+        return new UpdateFotoPerfilController().handle(request, reply);
+    });
 
     //Rotas de Tipo Usuario
 
@@ -234,11 +240,11 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     //Rotas de Grupo
 
-    fastify.post("/grupo", { preHandler: [authenticate] }, async (request, reply) => {
+    fastify.post("/grupo", async (request, reply) => {
         return new CreateGrupoController().handle(request, reply);
     });
 
-    fastify.get("/grupos", { preHandler: [authenticate] }, async (req, reply) => {
+    fastify.get("/grupo", async (req, reply) => {
         return new ListGruposDoUsuarioController().handle(req, reply);
     });
 
@@ -272,5 +278,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.delete("/curso/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteCursoController().handle(request, reply)
     })
+
+    // rota de upload de foto de perfil do usuário
 
 }
