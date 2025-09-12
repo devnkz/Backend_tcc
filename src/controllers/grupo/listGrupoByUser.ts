@@ -3,7 +3,8 @@ import { ListGruposDoUsuarioService } from "../../services/grupo/listGrupoByUser
 
 class ListGruposDoUsuarioController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const userId = (request.params as any).id;
+    // user vem do middleware authenticate
+    const userId = (request as any).user.id;
 
     const service = new ListGruposDoUsuarioService();
     const grupos = await service.execute(userId);

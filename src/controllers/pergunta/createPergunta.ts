@@ -1,15 +1,23 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createPerguntaService } from "../../services/pergunta/createPergunta";
+import { CreatePerguntaService } from "../../services/pergunta/createPergunta";
 
 class CreatePerguntaController {
-    async handle(request: FastifyRequest, reply: FastifyReply) {
-        const { fkIdUsuario, pergunta, fkIdComponent } = request.body as { fkIdUsuario: string, pergunta: string, fkIdComponent: string };
+  async handle(request: FastifyRequest, reply: FastifyReply) {
+    const { userId, conteudo, fkIdComponente } = request.body as {
+      userId: string;
+      conteudo: string;
+      fkIdComponente: string;
+    };
 
-        const createPergunta = new createPerguntaService()
-        const Pergunta = await createPergunta.execute({ fkIdUsuario, pergunta, fkIdComponent});
-
-        reply.send(Pergunta);
+    try {
+      const createPergunta = new CreatePerguntaService();
+      const pergunta = await createPergunta.execute({ userId, conteudo, fkIdComponente });
+      return reply.send(pergunta);
+    } catch (error: any) {
+      console.error("Erro ao criar pergunta:", error.message);
+      return reply.status(500).send({ error: error.message });
     }
+  }
 }
 
 export { CreatePerguntaController };

@@ -1,27 +1,31 @@
 import prismaClient from "../../prisma";
 
 interface CreateRespostaProps {
-  fkIdPergunta: string;
-  fkIdUsuario: string;
-  resposta: string;
+  perguntaId: string;
+  userId: string;
+  conteudo: string;
 }
 
-class createRespostaService {
-  async execute({ fkIdPergunta, fkIdUsuario, resposta }: CreateRespostaProps) {
-    if (!fkIdPergunta || !fkIdUsuario || !resposta) {
+class CreateRespostaService {
+  async execute({ perguntaId, userId, conteudo }: CreateRespostaProps) {
+    if (!perguntaId || !userId || !conteudo) {
       throw new Error("Informações faltando");
     }
 
-    const respostaCriada = await prismaClient.resposta.create({
+    const resposta = await prismaClient.resposta.create({
       data: {
-        fkIdPergunta,
-        fkIdUsuario,
-        resposta,
+        perguntaId,
+        userId,
+        conteudo,
+      },
+      include: {
+        user: true,        // opcional, traz dados do usuário
+        pergunta: true,    // opcional, traz dados da pergunta
       },
     });
 
-    return respostaCriada;
+    return resposta;
   }
 }
 
-export { createRespostaService }; 
+export { CreateRespostaService };

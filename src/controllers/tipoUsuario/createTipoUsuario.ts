@@ -3,10 +3,10 @@ import { createTipoUsuarioService } from "../../services/tipoUsuario/createTipoU
 
 class CreateTipoUsuarioController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
-        const { nomeTipoUsuario } = request.body as { nomeTipoUsuario: string };
+        const { nome } = request.body as { nome: string };
 
         const createTipoUsuario = new createTipoUsuarioService()
-        const TipoUsuario = await createTipoUsuario.execute({ nomeTipoUsuario });
+        const TipoUsuario = await createTipoUsuario.execute({ nome });
 
         reply.send(TipoUsuario);
     }

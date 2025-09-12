@@ -9,7 +9,14 @@ class ListGruposDoUsuarioService {
         },
       },
       include: {
-        membros: { include: { user: true } },
+        membros: {
+          include: { user: true },
+        },
+        componente: {
+          select: {
+            nome: true,
+          },
+        },
       },
     });
 

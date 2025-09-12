@@ -1,18 +1,18 @@
 import prismaClient from "../../prisma";
 
 interface CreateCursoProps {
-  nomeCurso: string;
+  nome: string;
 }
 
 class createCursoService {
-  async execute({ nomeCurso }: CreateCursoProps) {
-    if (!nomeCurso) {
+  async execute({ nome }: CreateCursoProps) {
+    if (!nome) {
       throw new Error("Nome do curso é obrigatório");
     }
 
     const curso = await prismaClient.curso.create({
       data: {
-        nomeCurso,
+        nome,
       },
     });
 

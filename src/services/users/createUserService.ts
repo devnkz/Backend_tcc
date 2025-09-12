@@ -6,33 +6,40 @@ interface CreateUserProps {
   apelido: string;
   email: string;
   senha: string;
-  fkIdTipoUsuario?: string; 
+  fkIdCurso: string;        // obrigatório
+  fkIdTipoUsuario: string;  // obrigatório
 }
 
-class createUserService {
+class CreateUserService {
   async execute({
     name,
     apelido,
     email,
     senha,
-    fkIdTipoUsuario = "d419bc88-a455-40a4-884c-e79269125351"
+    fkIdCurso,
+    fkIdTipoUsuario = "7bd9763d-e2ba-42c5-a3a4-09de72f2feb0",
   }: CreateUserProps) {
-
-    if (!name || !apelido || !email || !senha) {
-      throw new Error("Informacoes faltando");
+    if (!name || !apelido || !email || !senha || !fkIdCurso || !fkIdTipoUsuario) {
+      throw new Error("Informações faltando");
     }
 
     // Criptografar a senha
-    const saltRounds = 10; // número de rounds de hash, padrão seguro
+    const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(senha, saltRounds);
 
+    // Criar usuário
     const user = await prismaClient.user.create({
       data: {
         name,
         apelido,
         email,
-        senha: hashedPassword, // salvar a senha criptografada
+        senha: hashedPassword,
+        fkIdCurso,
         fkIdTipoUsuario,
+      },
+      include: {
+        curso: true,
+        tipoUsuario: true,
       },
     });
 
@@ -40,4 +47,4 @@ class createUserService {
   }
 }
 
-export { createUserService };
+export { CreateUserService };

@@ -67,6 +67,7 @@ import { DeleteComentarioController } from './controllers/comentario/deleteComen
 
 import { CreateGrupoController } from './controllers/grupo/createGrupo';
 import { ListGruposDoUsuarioController } from './controllers/grupo/listGrupoByUser';
+import { ListGruposByIdController } from './controllers/grupo/listGrupoById';
 import { ListGrupoController } from './controllers/grupo/listGrupo';
 import { UpdateGrupoController } from './controllers/grupo/updateGrupo';
 import { DeleteGrupoController } from './controllers/grupo/deleteGrupo';
@@ -77,6 +78,10 @@ import { CreateCursoController } from './controllers/curso/createCurso';
 import { ListCursoController } from './controllers/curso/listCurso';
 import { UpdateCursoController } from './controllers/curso/updateCurso';
 import { DeleteCursoController } from './controllers/curso/deleteCurso';
+
+interface RequestParams {
+  id: string;
+}
 
 export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
 
@@ -166,42 +171,6 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new DeleteComponenteController().handle(request, reply)
     })
 
-    //Rotas de Tag
-
-    fastify.post("/tag", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new CreateTagController().handle(request, reply)
-    })
-
-    fastify.get("/tag", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new ListTagController().handle(request, reply)
-    })
-
-    fastify.put("/tag/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new UpdateTagController().handle(request, reply)
-    })
-
-    fastify.delete("/tag/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new DeleteTagController().handle(request, reply)
-    })
-
-    //Rotas de Artigo
-
-    fastify.post("/artigo", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new CreateArtigoController().handle(request, reply)
-    })
-
-    fastify.get("/artigo", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new ListArtigoController().handle(request, reply)
-    })
-
-    fastify.put("/artigo/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new UpdateArtigoController().handle(request, reply)
-    })
-
-    fastify.delete("/artigo/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new DeleteArtigoController().handle(request, reply)
-    })
-
     //Rotas de Resposta
 
     fastify.post("/resposta", async (request: FastifyRequest, reply: FastifyReply) => {
@@ -244,11 +213,16 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new CreateGrupoController().handle(request, reply);
     });
 
-    fastify.get("/grupo", async (req, reply) => {
+    fastify.get("/grupo/user", { preHandler: [authenticate] }, async (req, reply) => {
         return new ListGruposDoUsuarioController().handle(req, reply);
     });
 
-    fastify.get("/grupo/:id", { preHandler: [authenticate] }, async (request, reply) => {
+    fastify.get<{ Params: RequestParams }>("/grupo/:id",
+      async (request, reply) => {
+        return new ListGruposByIdController().handle(request, reply);
+    });
+
+    fastify.get("/grupo", async (request, reply) => {
         return new ListGrupoController().handle(request, reply);
     });
 

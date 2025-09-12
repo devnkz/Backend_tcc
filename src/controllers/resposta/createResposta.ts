@@ -1,26 +1,26 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createRespostaService } from "../../services/resposta/createRespostaService";
+import { CreateRespostaService } from "../../services/resposta/createRespostaService";
 
 interface CreateRespostaBody {
-  fkIdPergunta: string;
-  fkIdUsuario: string;
-  resposta: string;
+  perguntaId: string;
+  userId: string;
+  conteudo: string;
 }
 
 class CreateRespostaController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { fkIdPergunta, fkIdUsuario, resposta } = request.body as CreateRespostaBody;
-
-    const createResposta = new createRespostaService();
+    const { perguntaId, userId, conteudo } = request.body as CreateRespostaBody;
 
     try {
-      const respostaCriada = await createResposta.execute({ fkIdPergunta, fkIdUsuario, resposta });
+      const createResposta = new CreateRespostaService();
+      const respostaCriada = await createResposta.execute({ perguntaId, userId, conteudo });
+
       return reply.send(respostaCriada);
-    } catch (error) {
-      console.error("Erro ao criar resposta:", error);
-      return reply.status(500).send({ error: "Erro interno ao criar resposta." });
+    } catch (error: any) {
+      console.error("Erro ao criar resposta:", error.message);
+      return reply.status(500).send({ error: error.message });
     }
   }
 }
 
-export { CreateRespostaController }; 
+export { CreateRespostaController };

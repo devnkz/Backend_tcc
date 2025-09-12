@@ -4,7 +4,7 @@ class ListPerguntaByIdUserService {
   async execute(userId: string) {
     const perguntas = await prismaClient.pergunta.findMany({
       where: {
-        fkIdUsuario: userId, // filtra pelo usuário
+        userId: userId, // filtra pelo usuário
       },
       orderBy: { createdAt: "desc" },
       include: {
@@ -12,20 +12,20 @@ class ListPerguntaByIdUserService {
           select: {id:true,  name: true, apelido: true },
         },
         componente: {
-          select: { nomeComponente: true },
+          select: { nome: true },
         },
       },
     });
 
     return perguntas.map(p => ({
       id: p.id,
-      pergunta: p.pergunta,
+      pergunta: p.conteudo,
       usuario: {
         id: p.user.id,
         name: p.user.name,
         apelido: p.user.apelido,
       },
-      materia: p.componente.nomeComponente,
+      materia: p.componente.nome,
       criadaEm: p.createdAt,
     }));
   }

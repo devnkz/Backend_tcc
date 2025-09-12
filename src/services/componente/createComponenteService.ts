@@ -1,20 +1,28 @@
 import prismaClient from "../../prisma";
 
 interface CreateComponenteProps {
-  nomeComponente: string;
+  nome: string;
   fkIdCurso: string;
 }
 
-class createComponenteService {
-  async execute({ nomeComponente, fkIdCurso }: CreateComponenteProps) {
-    if (!nomeComponente || !fkIdCurso) {
+class CreateComponenteService {
+  async execute({ nome, fkIdCurso }: CreateComponenteProps) {
+    if (!nome || !fkIdCurso) {
       throw new Error("Informações faltando");
     }
 
     const componente = await prismaClient.componente.create({
       data: {
-        nomeComponente,
+        nome,
         fkIdCurso,
+      },
+      include: {
+        curso: {
+          select: {
+            id: true,
+            nome: true, // já retorna o nome do curso
+          },
+        },
       },
     });
 
@@ -22,4 +30,4 @@ class createComponenteService {
   }
 }
 
-export { createComponenteService }; 
+export { CreateComponenteService };

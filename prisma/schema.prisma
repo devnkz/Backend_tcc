@@ -7,96 +7,81 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id              String      @id @default(uuid())
-  name            String
-  apelido         String
-  fotoPerfil      String?
-  email           String      @unique
-  senha           String
+model User {
+  id         String  @id @default(uuid())
+  name       String
+  apelido    String
+  fotoPerfil String?
+  email      String  @unique
+  senha      String
+
   fkIdTipoUsuario String
-  createdAt       DateTime    @default(now())
-  pergunta        pergunta[]
-  grupos          grupoUser[]
+  tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id])
+
+  fkIdCurso String
+  curso     Curso  @relation(fields: [fkIdCurso], references: [id]) // <-- obrigatório
+
+  createdAt DateTime    @default(now())
+  pergunta  Pergunta[]
+  grupos    GrupoUser[]
+  Resposta  Resposta[]
 }
 
-// Feito 
-
-model pergunta {
-  id            String   @id @default(uuid())
-  fkIdUsuario   String
-  pergunta      String
-  fkIdComponent String
-  createdAt     DateTime @default(now())
-
-  user       user       @relation(fields: [fkIdUsuario], references: [id])
-  componente componente @relation(fields: [fkIdComponent], references: [id])
+model TipoUsuario {
+  id    String @id @default(uuid())
+  nome  String
+  users User[]
 }
 
-// Feito
+model Curso {
+  id         String       @id @default(uuid())
+  nome       String
+  users      User[]
+  Componente Componente[]
+}
 
-model componente {
+model Pergunta {
   id             String     @id @default(uuid())
-  nomeComponente String
-  fkIdCurso      String
-  pergunta       pergunta[]
-}
-
-model tag {
-  id           String @id @default(uuid())
-  nomeTag      String
-  descricaoTag String
-}
-
-model artigo {
-  id             String @id @default(uuid())
+  conteudo       String
+  userId         String
+  user           User       @relation(fields: [userId], references: [id])
   fkIdComponente String
-  nomeArtigo     String
-  textoArtigo    String
+  componente     Componente @relation(fields: [fkIdComponente], references: [id])
+  createdAt      DateTime   @default(now())
+  Resposta       Resposta[]
 }
 
-model resposta {
-  id           String   @id @default(uuid())
-  fkIdPergunta String
-  fkIdUsuario  String
-  resposta     String
-  createdAt    DateTime @default(now())
+model Resposta {
+  id         String   @id @default(uuid())
+  conteudo   String
+  userId     String
+  perguntaId String
+  user       User     @relation(fields: [userId], references: [id])
+  pergunta   Pergunta @relation(fields: [perguntaId], references: [id])
+  createdAt  DateTime @default(now())
 }
 
-model comentario {
-  id           String   @id @default(uuid())
-  fkIdResposta String
-  fkIdUsuario  String
-  comentario   String
-  createdAt    DateTime @default(now())
+model GrupoUser {
+  id      String @id @default(uuid())
+  userId  String
+  grupoId String
+  user    User   @relation(fields: [userId], references: [id])
+  grupo   Grupo  @relation(fields: [grupoId], references: [id])
 }
 
-model grupo {
+model Grupo {
   id             String      @id @default(uuid())
   nomeGrupo      String
   fkIdComponente String
-  membros        grupoUser[]
+  componente     Componente  @relation(fields: [fkIdComponente], references: [id])
+  membros        GrupoUser[]
 }
 
-model grupoUser {
-  id      String @id @default(uuid())
-  grupoId String
-  userId  String
-
-  grupo grupo @relation(fields: [grupoId], references: [id])
-  user  user  @relation(fields: [userId], references: [id])
-
-  @@unique([grupoId, userId])
-}
-
-model tipousuario {
-  id              String @id @default(uuid())
-  nomeTipoUsuario String
-}
-
-// Feito  
-
-model curso {
-  id        String @id @default(uuid())
-  nomeCurso String
+model Componente {
+  id        String     @id @default(uuid())
+  nome      String
+  fkIdCurso String
+  curso     Curso      @relation(fields: [fkIdCurso], references: [id])
+  grupos    Grupo[]
+  Pergunta  Pergunta[]
 }

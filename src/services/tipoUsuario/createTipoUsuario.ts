@@ -1,20 +1,20 @@
 import prismaClient from "../../prisma";
 
 interface CreateTipoUsuarioProps {
-  nomeTipoUsuario: string;
+  nome: string;
 }
 
 
 class createTipoUsuarioService {
-  async execute({ nomeTipoUsuario } : CreateTipoUsuarioProps) {
+  async execute({ nome } : CreateTipoUsuarioProps) {
     
-    if (!nomeTipoUsuario) {
+    if (!nome) {
       throw new Error("Informacoes faltando");
     }
 
-    const TipoUsuario = await prismaClient.tipousuario.create({
+    const TipoUsuario = await prismaClient.tipoUsuario.create({
       data: {
-       nomeTipoUsuario,
+       nome,
       },
     });
 

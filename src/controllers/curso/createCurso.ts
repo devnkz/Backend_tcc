@@ -2,17 +2,17 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { createCursoService } from "../../services/curso/createCursoService";
 
 interface CreateCursoBody {
-  nomeCurso: string;
+  nome: string;
 }
 
 class CreateCursoController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { nomeCurso } = request.body as CreateCursoBody;
+    const { nome } = request.body as CreateCursoBody;
 
     const createCurso = new createCursoService();
 
     try {
-      const curso = await createCurso.execute({ nomeCurso });
+      const curso = await createCurso.execute({ nome });
       return reply.send(curso);
     } catch (error) {
       console.error("Erro ao criar curso:", error);
