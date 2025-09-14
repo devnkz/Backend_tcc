@@ -19,12 +19,13 @@ model User {
   tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id])
 
   fkIdCurso String
-  curso     Curso  @relation(fields: [fkIdCurso], references: [id]) // <-- obrigatório
+  curso     Curso  @relation(fields: [fkIdCurso], references: [id]) // obrigatório
 
-  createdAt DateTime    @default(now())
-  pergunta  Pergunta[]
-  grupos    GrupoUser[]
-  Resposta  Resposta[]
+  createdAt     DateTime   @default(now())
+  pergunta      Pergunta[]
+  respostas     Resposta[]
+  grupos        Membro[] // 👈 relação N:N via tabela Membro
+  gruposCriados Grupo[]    @relation("GrupoCriador") // 👈 grupos que o user criou
 }
 
 model TipoUsuario {
@@ -34,10 +35,10 @@ model TipoUsuario {
 }
 
 model Curso {
-  id         String       @id @default(uuid())
-  nome       String
-  users      User[]
-  Componente Componente[]
+  id          String       @id @default(uuid())
+  nome        String
+  users       User[]
+  componentes Componente[]
 }
 
 model Pergunta {
@@ -48,7 +49,7 @@ model Pergunta {
   fkIdComponente String
   componente     Componente @relation(fields: [fkIdComponente], references: [id])
   createdAt      DateTime   @default(now())
-  Resposta       Resposta[]
+  respostas      Resposta[]
 }
 
 model Resposta {
@@ -61,20 +62,24 @@ model Resposta {
   createdAt  DateTime @default(now())
 }
 
-model GrupoUser {
+model Grupo {
+  id             String     @id @default(uuid())
+  nomeGrupo      String
+  fkIdComponente String
+  createdById    String
+  createdBy      User       @relation("GrupoCriador", fields: [createdById], references: [id])
+  membros        Membro[] // 👈 membros do grupo
+  componente     Componente @relation(fields: [fkIdComponente], references: [id])
+}
+
+model Membro {
   id      String @id @default(uuid())
   userId  String
   grupoId String
   user    User   @relation(fields: [userId], references: [id])
   grupo   Grupo  @relation(fields: [grupoId], references: [id])
-}
 
-model Grupo {
-  id             String      @id @default(uuid())
-  nomeGrupo      String
-  fkIdComponente String
-  componente     Componente  @relation(fields: [fkIdComponente], references: [id])
-  membros        GrupoUser[]
+  @@unique([userId, grupoId]) // cada user só pode estar uma vez no grupo
 }
 
 model Componente {
@@ -83,5 +88,5 @@ model Componente {
   fkIdCurso String
   curso     Curso      @relation(fields: [fkIdCurso], references: [id])
   grupos    Grupo[]
-  Pergunta  Pergunta[]
+  perguntas Pergunta[]
 }

@@ -22,7 +22,8 @@ class UpdateUserService {
         // Atualizar usuário e retornar os dados modificados
         const updatedUser = await prismaClient.user.update({
             where: { id },
-            data: { name, apelido, email, senha }
+            data: { name, apelido, email, senha },
+            include:{curso: true}
         });
 
         return updatedUser;

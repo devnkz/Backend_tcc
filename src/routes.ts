@@ -35,33 +35,12 @@ import { ListComponenteController } from './controllers/componente/listComponent
 import { UpdateComponenteController } from './controllers/componente/updateComponente';
 import { DeleteComponenteController } from './controllers/componente/deleteComponente';
 
-//imports Tag
-
-import { CreateTagController } from './controllers/tag/createTag';
-import { ListTagController } from './controllers/tag/listTag';
-import { UpdateTagController } from './controllers/tag/updateTag';
-import { DeleteTagController } from './controllers/tag/deleteTag';
-
-//imports Artigo
-
-import { CreateArtigoController } from './controllers/artigo/createArtigo';
-import { ListArtigoController } from './controllers/artigo/listArtigo';
-import { UpdateArtigoController } from './controllers/artigo/updateArtigo';
-import { DeleteArtigoController } from './controllers/artigo/deleteArtigo';
-
 //imports Resposta
 
 import { CreateRespostaController } from './controllers/resposta/createResposta';
 import { ListRespostaController } from './controllers/resposta/listResposta';
 import { UpdateRespostaController } from './controllers/resposta/updateResposta';
 import { DeleteRespostaController } from './controllers/resposta/deleteResposta';
-
-//imports Comentario
-
-import { CreateComentarioController } from './controllers/comentario/createComentario';
-import { ListComentarioController } from './controllers/comentario/listComentario';
-import { UpdateComentarioController } from './controllers/comentario/updateComentario';
-import { DeleteComentarioController } from './controllers/comentario/deleteComentario';
 
 //imports Grupo
 
@@ -71,6 +50,8 @@ import { ListGruposByIdController } from './controllers/grupo/listGrupoById';
 import { ListGrupoController } from './controllers/grupo/listGrupo';
 import { UpdateGrupoController } from './controllers/grupo/updateGrupo';
 import { DeleteGrupoController } from './controllers/grupo/deleteGrupo';
+import { RemoveMembroController } from './controllers/grupo/removerMembroController';
+import { LeaveGrupoController } from './controllers/grupo/leaveGrupoController';
 
 //imports Curso
 
@@ -189,24 +170,6 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new DeleteRespostaController().handle(request, reply)
     })
 
-    //Rotas de Comentario
-
-    fastify.post("/comentario", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new CreateComentarioController().handle(request, reply)
-    })
-
-    fastify.get("/comentario", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new ListComentarioController().handle(request, reply)
-    })
-
-    fastify.put("/comentario/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new UpdateComentarioController().handle(request, reply)
-    })
-
-    fastify.delete("/comentario/:id", async (request: FastifyRequest, reply: FastifyReply) => {
-        return new DeleteComentarioController().handle(request, reply)
-    })
-
     //Rotas de Grupo
 
     fastify.post("/grupo", async (request, reply) => {
@@ -234,6 +197,14 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new DeleteGrupoController().handle(request, reply);
     });
 
+    fastify.delete("/grupo/:grupoId/membro/:membroId", { preHandler: [authenticate] }, async (request, reply) => {
+        return new RemoveMembroController().handle(request as any, reply);
+    });
+
+    fastify.delete("/grupo/:grupoId/sair", { preHandler: [authenticate] }, async (request, reply) => {
+        return new LeaveGrupoController().handle(request as any, reply);
+    });
+
 
     //Rotas de Curso
 
@@ -252,7 +223,5 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
     fastify.delete("/curso/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteCursoController().handle(request, reply)
     })
-
-    // rota de upload de foto de perfil do usuário
 
 }

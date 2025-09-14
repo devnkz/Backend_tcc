@@ -17,7 +17,9 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
       return reply.status(401).send({ success: false, error: "Token inválido" });
     }
 
-    const decoded = jwt.verify(token, SECRET) as { id: string };
+    const decoded = jwt.verify(token, SECRET) as { id: string; [key: string]: any };
+
+    console.log("💡 Payload do token:", decoded); // 👈 aqui você vê tudo que veio no token
 
     if (!decoded || !decoded.id) {
       return reply.status(401).send({ success: false, error: "Token inválido" });
