@@ -58,7 +58,7 @@ model Resposta {
   userId     String
   perguntaId String
   user       User     @relation(fields: [userId], references: [id])
-  pergunta   Pergunta @relation(fields: [perguntaId], references: [id])
+  pergunta   Pergunta @relation(fields: [perguntaId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
 }
 

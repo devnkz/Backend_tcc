@@ -2,13 +2,13 @@ import prismaClient from "../../prisma";
 
 interface UpdatePerguntaProps {
     id: string;
-    fkIdUsuario: string;
-    pergunta: string;
-    fkIdComponent: string;
+    userId: string;
+    conteudo: string;
+    fkIdComponente?: string;
 }
 
 class UpdatePerguntaService {
-    async execute({ id, fkIdUsuario, pergunta, fkIdComponent }: UpdatePerguntaProps) {
+    async execute({ id, userId, conteudo, fkIdComponente }: UpdatePerguntaProps) {
         // Buscar usuário pelo ID
         const findPergunta = await prismaClient.pergunta.findUnique({
             where: { id }
@@ -21,7 +21,7 @@ class UpdatePerguntaService {
         // Atualizar usuário e retornar os dados modificados
         const updatedPergunta = await prismaClient.pergunta.update({
             where: { id },
-            data: { fkIdUsuario, pergunta, fkIdComponent }
+            data: { userId, conteudo, fkIdComponente: fkIdComponente ?? findPergunta.fkIdComponente }
         });
 
         return updatedPergunta;

@@ -1,18 +1,20 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { deleteRespostaService } from "../../services/resposta/deleteRespostaService";
+import { DeleteRespostaService } from "../../services/resposta/deleteRespostaService";
 
 interface DeleteRespostaParams {
   id: string;
+  deleteUser: string;
 }
 
 class DeleteRespostaController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as DeleteRespostaParams;
+     const deleteUser = (request as any).user?.id;
 
-    const deleteResposta = new deleteRespostaService();
+    const deleteResposta = new DeleteRespostaService();
 
     try {
-      await deleteResposta.execute({ id });
+      await deleteResposta.execute({ id, deleteUser });
       return reply.status(204).send();
     } catch (error) {
       console.error("Erro ao deletar resposta:", error);

@@ -126,7 +126,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new ListPerguntaByIdUserController().handle(request, reply);
     });
 
-    fastify.delete("/pergunta", async (request: FastifyRequest, reply: FastifyReply) => {
+    fastify.delete("/pergunta/delete/:id", { preHandler: [authenticate] } ,async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeletePerguntaController().handle(request, reply)
     })
 
@@ -166,7 +166,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new UpdateRespostaController().handle(request, reply)
     })
 
-    fastify.delete("/resposta/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+    fastify.delete("/resposta/delete/:id",{ preHandler: [authenticate] } , async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteRespostaController().handle(request, reply)
     })
 
