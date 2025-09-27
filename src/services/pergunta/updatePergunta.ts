@@ -9,7 +9,7 @@ interface UpdatePerguntaProps {
 
 class UpdatePerguntaService {
     async execute({ id, userId, conteudo, fkIdComponente }: UpdatePerguntaProps) {
-        // Buscar usuário pelo ID
+        // Buscar pergunta pelo ID
         const findPergunta = await prismaClient.pergunta.findUnique({
             where: { id }
         });
@@ -18,11 +18,20 @@ class UpdatePerguntaService {
             throw new Error("Usuário não encontrado");
         }
 
-        // Atualizar usuário e retornar os dados modificados
+        if(findPergunta.userId !== userId){
+            throw new Error("Você não tem permissão para atualizar esta pergunta");
+        }
+
+        // Atualizar pergunta e retornar os dados modificados
         const updatedPergunta = await prismaClient.pergunta.update({
             where: { id },
-            data: { userId, conteudo, fkIdComponente: fkIdComponente ?? findPergunta.fkIdComponente }
-        });
+                data: {
+                    conteudo,
+                    fkIdComponente: fkIdComponente && fkIdComponente.trim() !== "" 
+                    ? fkIdComponente 
+                    : findPergunta.fkIdComponente
+                }
+});
 
         return updatedPergunta;
     }

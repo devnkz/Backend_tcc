@@ -6,10 +6,11 @@ class UpdatePerguntaController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
         // Recuperar `id` da URL e os demais dados do corpo
         const { id } = request.params as { id: string };
-        const { fkIdUsuario, pergunta, fkIdComponent } = request.body as { fkIdUsuario: string; pergunta: string; fkIdComponent: string; };
+        const userId: string = (request as any).user?.id;
+        const { conteudo, fkIdComponente } = request.body as {  conteudo: string; fkIdComponente: string; };
 
         const Pergunta = new UpdatePerguntaService();
-        const updatedPergunta = await Pergunta.execute({ id, fkIdUsuario, pergunta, fkIdComponent });
+        const updatedPergunta = await Pergunta.execute({ id, userId, conteudo, fkIdComponente });
 
         reply.send(updatedPergunta);
     }

@@ -130,7 +130,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new DeletePerguntaController().handle(request, reply)
     })
 
-    fastify.put("/pergunta/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+    fastify.put("/pergunta/:id", { preHandler: [authenticate] } ,async (request: FastifyRequest, reply: FastifyReply) => {
         return new UpdatePerguntaController().handle(request, reply)
     })
 
