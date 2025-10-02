@@ -2,16 +2,19 @@ import prismaClient from "../../prisma";
 
 interface UpdateFotoPerfilRequest {
   id: string;
-  url: string;
+  foto_perfil: string;
 }
 
 export class UpdateFotoPerfilService {
-  async execute({ id, url }: UpdateFotoPerfilRequest) {
-    const user = await prismaClient.user.update({
-      where: { id },
+  async execute({ id, foto_perfil }: UpdateFotoPerfilRequest) {
+    const user = await prismaClient.usuarios.update({
+      where: { id_usuario: id },
       data: {
-        fotoPerfil: url,
+        foto_perfil: foto_perfil,
       },
+      include: {
+        tipoUsuario: true
+      }
     });
 
     return user;

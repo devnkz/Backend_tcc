@@ -2,24 +2,27 @@ import prismaClient from "../../prisma";
 
 class CreateGrupoService {
   async execute(
-    nomeGrupo: string,
-    fkIdComponente: string,
+    nome_grupo: string,
     membrosIds: string[],
-    createdById: string // 👈 quem está criando o grupo
+    createdById: string
   ) {
     const grupo = await prismaClient.grupo.create({
       data: {
-        nomeGrupo,
-        fkIdComponente,
-        createdById, // 👈 adiciona o criador
+        nome_grupo,
+        fkId_usuario: createdById, // 👈 adiciona o criador
         membros: {
-          create: membrosIds.map((userId) => ({ userId })),
+          create: membrosIds.map((userId) => ({ 
+            fkId_usuario: userId 
+          })),
         },
       },
       include: {
-        componente: true,       // pra nome do componente aparecer
-        membros: { include: { user: true } }, // pra membros aparecerem
-        createdBy: true,        // opcional: retorna dados do criador
+        membros: { 
+          include: { 
+            usuario: true 
+          } 
+        },
+        usuario: true,
       },
     });
 

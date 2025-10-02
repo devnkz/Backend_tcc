@@ -2,8 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { updateGrupoService } from "../../services/grupo/updateGrupoService";
 
 interface UpdateGrupoBody {
-  nomeGrupo?: string;
-  fkIdComponente?: string;
+  nome_grupo?: string;
   novosMembrosIds?: string[];
 }
 
@@ -14,12 +13,16 @@ interface UpdateGrupoParams {
 class UpdateGrupoController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as UpdateGrupoParams;
-    const { nomeGrupo, fkIdComponente, novosMembrosIds } = request.body as UpdateGrupoBody;
+    const { nome_grupo, novosMembrosIds } = request.body as UpdateGrupoBody;
 
     const updateGrupo = new updateGrupoService();
 
     try {
-      const grupo = await updateGrupo.execute({ id, nomeGrupo, fkIdComponente, novosMembrosIds });
+      const grupo = await updateGrupo.execute({ 
+        id, 
+        nome_grupo,  
+        novosMembrosIds 
+      });
       return reply.send(grupo);
     } catch (error) {
       console.error("Erro ao atualizar grupo:", error);

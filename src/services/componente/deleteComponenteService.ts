@@ -12,7 +12,7 @@ class deleteComponenteService {
 
     await prismaClient.componente.delete({
       where: {
-        id: id,
+        id_componente: id,
       },
     });
   }

@@ -3,12 +3,27 @@ import prismaClient from "../../prisma";
 class ListGruposByIdService {
   async execute(grupoId: string) {
     const grupo = await prismaClient.grupo.findUnique({
-      where: { id: grupoId },
+      where: { id_grupo: grupoId },
       include: {
-        createdBy: { select: { name: true} },
+        usuario: { 
+          select: { 
+            id_usuario: true,
+            nome_usuario: true,
+            apelido_usuario: true
+          }
+        },
         membros: {
-          include: { user: true }
-        }
+          include: { 
+            usuario: {
+              select: {
+                id_usuario: true,
+                nome_usuario: true,
+                apelido_usuario: true,
+                foto_perfil: true
+              }
+            }
+          }
+        },
       }
     });
 

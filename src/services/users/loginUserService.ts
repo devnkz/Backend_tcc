@@ -3,16 +3,19 @@ import bcrypt from "bcrypt";
 import prismaClient from "../../prisma";
 
 interface LoginUserProps {
-  email: string;
-  senha: string;
+  email_usuario: string;
+  senha_usuario: string;
 }
 
 class LoginUserService {
-  async execute({ email, senha }: LoginUserProps) {
+  async execute({ email_usuario, senha_usuario }: LoginUserProps) {
     // Buscar o usuário pelo email
-    const findUser = await prismaClient.user.findFirst({
+    const findUser = await prismaClient.usuarios.findFirst({
       where: {
-        email: email
+        email_usuario: email_usuario
+      },
+      include: {
+        tipoUsuario: true
       }
     });
 
@@ -21,7 +24,7 @@ class LoginUserService {
     }
 
     // Verificar se a senha fornecida bate com a senha criptografada
-    const isPasswordValid = await bcrypt.compare(senha, findUser.senha);
+    const isPasswordValid = await bcrypt.compare(senha_usuario, findUser.senha_usuario);
 
     if (!isPasswordValid) {
       throw new Error("Senha incorreta");
@@ -30,10 +33,10 @@ class LoginUserService {
     // Gerar o token JWT
     const token = jwt.sign(
       {
-        id: findUser.id,
-        name: findUser.name,
-        apelido: findUser.apelido,
-        email: findUser.email
+        id: findUser.id_usuario,
+        nome_usuario: findUser.nome_usuario,
+        apelido_usuario: findUser.apelido_usuario,
+        email_usuario: findUser.email_usuario
       },
       process.env.JWT_SECRET || "meuSegredo123@!",
       { expiresIn: "48h" }

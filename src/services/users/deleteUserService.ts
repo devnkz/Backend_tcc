@@ -11,19 +11,19 @@ class DeleteUserService {
             throw new Error("Id nao foi enviado")
         }
 
-        const findUser = await prismaClient.user.findFirst({
+        const findUser = await prismaClient.usuarios.findFirst({
             where: {
-                id: id
+                id_usuario: id
             }
         })
 
         if (!findUser) {
-            throw new Error("Cliente nao existe");
+            throw new Error("Usuario nao existe");
         }
 
-        await prismaClient.user.delete({
+        await prismaClient.usuarios.delete({
             where: {
-                id: findUser.id
+                id_usuario: findUser.id_usuario
             }
         })
 

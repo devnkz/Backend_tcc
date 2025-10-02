@@ -1,30 +1,48 @@
 import prismaClient from "../../prisma";
 
 interface CreatePerguntaProps {
-  userId: string;
-  conteudo: string;
-  fkIdComponente: string;
+  fkId_usuario: string;
+  pergunta: string;
+  fkId_componente: string;
+  fkId_curso: string;
 }
 
 class CreatePerguntaService {
-  async execute({ userId, conteudo, fkIdComponente }: CreatePerguntaProps) {
-    if (!userId || !conteudo || !fkIdComponente) {
+  async execute({ fkId_usuario, pergunta, fkId_componente, fkId_curso }: CreatePerguntaProps) {
+    if (!fkId_usuario || !pergunta || !fkId_componente || !fkId_curso) {
       throw new Error("Informações faltando");
     }
 
-    const pergunta = await prismaClient.pergunta.create({
+    const perguntaCriada = await prismaClient.pergunta.create({
       data: {
-        userId,
-        conteudo,
-        fkIdComponente,
+        fkId_usuario,
+        pergunta,
+        fkId_componente,
+        fkId_curso
       },
       include: {
-        user: true,
-        componente: true,
+        usuario: {
+          select: {
+            id_usuario: true,
+            nome_usuario: true,
+            apelido_usuario: true,
+          },
+        },
+        componente: {
+          select: {
+            id_componente: true,
+            nome_componente: true,
+          },
+        },
+        curso: {
+          select: {
+            id_curso: true,
+          }
+        },
       },
     });
 
-    return pergunta;
+    return perguntaCriada;
   }
 }
 

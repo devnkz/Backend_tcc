@@ -17,7 +17,7 @@ class DeletePerguntaService {
 
     // busca a pergunta no banco
     const findPergunta = await prismaClient.pergunta.findFirst({
-      where: { id }
+      where: { id_pergunta: id }
     })
 
     if (!findPergunta) {
@@ -25,15 +25,15 @@ class DeletePerguntaService {
     }
 
     // verifica se o dono é o mesmo que está tentando deletar
-    if (findPergunta.userId !== deleteUser) {
+    if (findPergunta.fkId_usuario !== deleteUser) {
       throw new Error(
-        `Usuário sem permissão. deleteUser: ${deleteUser}, dono: ${findPergunta.userId}`
+        `Usuário sem permissão. deleteUser: ${deleteUser}, dono: ${findPergunta.fkId_usuario}`
       )
     }
 
     // deleta a pergunta
     await prismaClient.pergunta.delete({
-      where: { id: findPergunta.id }
+      where: { id_pergunta: findPergunta.id_pergunta }
     })
 
     return { message: "Deletado com sucesso!" }

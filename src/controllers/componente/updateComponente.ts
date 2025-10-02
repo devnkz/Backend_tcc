@@ -2,8 +2,8 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { updateComponenteService } from "../../services/componente/updateComponenteService";
 
 interface UpdateComponenteBody {
-  nomeComponente?: string;
-  fkIdCurso?: string;
+  nome_componente?: string;
+  fkId_curso?: string;
 }
 
 interface UpdateComponenteParams {
@@ -13,12 +13,16 @@ interface UpdateComponenteParams {
 class UpdateComponenteController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
     const { id } = request.params as UpdateComponenteParams;
-    const { nomeComponente, fkIdCurso } = request.body as UpdateComponenteBody;
+    const { nome_componente, fkId_curso } = request.body as UpdateComponenteBody;
 
     const updateComponente = new updateComponenteService();
 
     try {
-      const componente = await updateComponente.execute({ id, nomeComponente, fkIdCurso });
+      const componente = await updateComponente.execute({ 
+        id, 
+        nome_componente, 
+        fkId_curso 
+      });
       return reply.send(componente);
     } catch (error) {
       console.error("Erro ao atualizar componente:", error);

@@ -2,25 +2,40 @@ import prismaClient from "../../prisma";
 
 interface UpdateRespostaProps {
   id: string;
-  fkIdPergunta?: string;
-  fkIdUsuario?: string;
+  fkId_pergunta?: string;
+  fkId_usuario?: string;
   resposta?: string;
 }
 
 class updateRespostaService {
-  async execute({ id, fkIdPergunta, fkIdUsuario, resposta }: UpdateRespostaProps) {
+  async execute({ id, fkId_pergunta, fkId_usuario, resposta }: UpdateRespostaProps) {
     if (!id) {
       throw new Error("ID é obrigatório");
     }
 
     const respostaAtualizada = await prismaClient.resposta.update({
       where: {
-        id: id,
+        id_resposta: id,
       },
       data: {
-        fkIdPergunta,
-        fkIdUsuario,
+        fkId_pergunta,
+        fkId_usuario,
         resposta,
+      },
+      include: {
+        usuario: {
+          select: {
+            id_usuario: true,
+            nome_usuario: true,
+            apelido_usuario: true,
+          },
+        },
+        pergunta: {
+          select: {
+            id_pergunta: true,
+            pergunta: true,
+          },
+        },
       },
     });
 

@@ -2,31 +2,35 @@ import prismaClient from "../../prisma";
 
 interface UpdateGrupoProps {
   id: string;
-  nomeGrupo?: string;
-  fkIdComponente?: string;
+  nome_grupo?: string;
   novosMembrosIds?: string[];
 }
 
 class updateGrupoService {
-  async execute({ id, nomeGrupo, fkIdComponente, novosMembrosIds }: UpdateGrupoProps) {
+  async execute({ id, nome_grupo, novosMembrosIds }: UpdateGrupoProps) {
     if (!id) {
       throw new Error("ID é obrigatório");
     }
 
     const grupoAtualizado = await prismaClient.grupo.update({
-      where: { id },
+      where: { id_grupo: id },
       data: {
-        nomeGrupo,
-        fkIdComponente,
+        nome_grupo,
         membros: novosMembrosIds
           ? {
-              create: novosMembrosIds.map((userId) => ({ userId })),
+              create: novosMembrosIds.map((userId) => ({ 
+                fkId_usuario: userId 
+              })),
             }
           : undefined,
       },
       include: {
-        membros: { include: { user: true } },
-        componente: true,
+        membros: { 
+          include: { 
+            usuario: true 
+          } 
+        },
+        usuario: true,
       },
     });
 

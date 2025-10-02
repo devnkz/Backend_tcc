@@ -3,30 +3,29 @@ import prismaClient from "../../prisma";
 class ListPerguntaService {
   async execute() {
     const perguntas = await prismaClient.pergunta.findMany({
-      orderBy: { createdAt : "desc" },
+      orderBy: { dataCriacao_pergunta : "desc" },
       include: {
-        user: {
-          select: { id: true, name: true, apelido: true },
+        usuario: {
+          select: { 
+            id_usuario: true, 
+            nome_usuario: true, 
+            apelido_usuario: true 
+          },
         },
         componente: {
-          select: { nome: true },
+          select: { 
+            nome_componente: true 
+          },
+        },
+        curso: {
+          select: {
+            nome_curso: true,
+          }
         },
       },
     });
 
-    const perguntasFormatadas = perguntas.map(p => ({
-    id: p.id,
-    pergunta: p.conteudo,
-    usuario: {
-      id: p.user.id,
-      name: p.user.name,
-      apelido: p.user.apelido,
-    },
-    materia: p.componente.nome,
-    criadaEm: p.createdAt,
-}));
-
-    return perguntasFormatadas;
+    return perguntas;
   }
 }
 

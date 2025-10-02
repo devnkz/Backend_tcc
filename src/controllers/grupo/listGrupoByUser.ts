@@ -6,6 +6,8 @@ class ListGruposDoUsuarioController {
     // user vem do middleware authenticate
     const userId = (request as any).user.id;
 
+    console.log("ID do usuário autenticado:", userId);
+
     const service = new ListGruposDoUsuarioService();
     const grupos = await service.execute(userId);
 

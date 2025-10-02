@@ -12,7 +12,7 @@ class deleteGrupoService {
 
     await prismaClient.grupo.delete({
       where: {
-        id: id,
+        id_grupo: id,
       },
     });
   }

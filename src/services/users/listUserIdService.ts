@@ -7,25 +7,13 @@ interface ListUserId {
 class ListUserIdService {
   async execute({ id }: ListUserId) {
     if (id) {
-      const users = await prismaClient.user.findMany({
-        where: { id },
+      const users = await prismaClient.usuarios.findUnique({
+        where: { id_usuario: id },
         include: {
-          curso: {
+          tipoUsuario: {
             select: {
-              id: true,
-              nome: true,
-            },
-          },
-        },
-      });
-      return users;
-    } else {
-      const users = await prismaClient.user.findMany({
-        include: {
-          curso: {
-            select: {
-              id: true,
-              nome: true,
+              id_tipousuario: true,
+              nome_tipousuario: true,
             },
           },
         },

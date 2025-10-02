@@ -12,7 +12,7 @@ class deleteCursoService {
 
     await prismaClient.curso.delete({
       where: {
-        id: id,
+        id_curso: id,
       },
     });
   }

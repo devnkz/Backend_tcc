@@ -2,28 +2,26 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { CreateUserService } from "../../services/users/createUserService";
 
 interface CreateUserBody {
-  name: string;
-  apelido: string;
-  email: string;
-  senha: string;
-  fkIdCurso: string;         // obrigatório
-  fkIdTipoUsuario: string;   // também obrigatório (ajustei)
+  nome_usuario: string;
+  apelido_usuario: string;
+  email_usuario: string;
+  senha_usuario: string;
+  fkIdTipoUsuario: string;
 }
 
 class CreateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { name, apelido, email, senha, fkIdCurso, fkIdTipoUsuario } = request.body as CreateUserBody;
+    const { nome_usuario, apelido_usuario, email_usuario, senha_usuario, fkIdTipoUsuario } = request.body as CreateUserBody;
 
     const createUser = new CreateUserService();
 
     try {
       const user = await createUser.execute({
-        name,
-        apelido,
-        email,
-        senha,
-        fkIdCurso,
-        fkIdTipoUsuario,
+        nome_usuario,
+        apelido_usuario,
+        email_usuario,
+        senha_usuario,
+        fkIdTipoUsuario
       });
 
       return reply.send(user);

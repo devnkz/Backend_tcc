@@ -13,8 +13,15 @@ class DeleteRespostaService {
 
     // Busca a resposta e inclui a pergunta relacionada
     const findResposta = await prismaClient.resposta.findFirst({
-      where: { id },
-      include: { pergunta: true }, // para acessar o dono da pergunta
+      where: { id_resposta: id },
+      include: { 
+        pergunta: {
+          select: {
+            id_pergunta: true,
+            fkId_usuario: true,
+          }
+        }
+      }, // para acessar o dono da pergunta
     });
 
     if (!findResposta) {
@@ -23,17 +30,17 @@ class DeleteRespostaService {
 
     // Verifica permissão: dono da resposta OU dono da pergunta
     const podeDeletar =
-      findResposta.userId === deleteUser || findResposta.pergunta.userId === deleteUser;
+      findResposta.fkId_usuario === deleteUser || findResposta.pergunta.fkId_usuario === deleteUser;
 
     if (!podeDeletar) {
       throw new Error(
-        `Usuário sem permissão. deleteUser: ${deleteUser}, dono da resposta: ${findResposta.userId}, dono da pergunta: ${findResposta.pergunta.userId}`
+        `Usuário sem permissão. deleteUser: ${deleteUser}, dono da resposta: ${findResposta.fkId_usuario}, dono da pergunta: ${findResposta.pergunta.fkId_usuario}`
       );
     }
 
     // Deleta a resposta
     await prismaClient.resposta.delete({
-      where: { id },
+      where: { id_resposta: id },
     });
 
     return { message: "Deletado com sucesso!" };

@@ -2,21 +2,21 @@ import prismaClient from "../../prisma";
 
 interface UpdateCursoProps {
   id: string;
-  nomeCurso?: string;
+  nome_curso?: string;
 }
 
 class updateCursoService {
-  async execute({ id, nomeCurso }: UpdateCursoProps) {
+  async execute({ id, nome_curso }: UpdateCursoProps) {
     if (!id) {
       throw new Error("ID é obrigatório");
     }
 
     const curso = await prismaClient.curso.update({
       where: {
-        id: id,
+        id_curso: id,
       },
       data: {
-        nomeCurso,
+        nome_curso,
       },
     });
 

@@ -6,8 +6,8 @@ class LeaveGrupoService {
     // Remove o membro do grupo baseado no userId do token
     const membroRemovido = await prismaClient.membro.deleteMany({
       where: {
-        userId,
-        grupoId,
+        fkId_usuario: userId,
+        fkId_grupo: grupoId,
       },
     });
 

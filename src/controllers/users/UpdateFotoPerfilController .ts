@@ -9,10 +9,10 @@ export class UpdateFotoPerfilController {
       return reply.status(400).send({ error: "Nenhum arquivo enviado" });
     }
 
-    const url = `http://localhost:3333/uploads/${request.file.filename}`;
+    const foto_perfil = `http://localhost:3333/uploads/${request.file.filename}`;
 
     const service = new UpdateFotoPerfilService();
-    const user = await service.execute({ id, url });
+    const user = await service.execute({ id, foto_perfil });
 
     return reply.send(user);
   }
