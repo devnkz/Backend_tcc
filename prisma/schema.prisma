@@ -25,6 +25,7 @@ model Usuarios {
   gruposCriados       Grupo[]    @relation("GrupoCriador")
   Curso               Curso?     @relation(fields: [cursoId_curso], references: [id_curso])
   cursoId_curso       String?
+  Mensagem            Mensagem[]
 }
 
 model TipoUsuario {
@@ -88,4 +89,12 @@ model Componente {
   fkId_curso      String
   curso           Curso      @relation(fields: [fkId_curso], references: [id_curso])
   perguntas       Pergunta[]
+}
+
+model Mensagem {
+  id_mensagem          String   @id @default(uuid())
+  mensagem             String
+  fkId_usuario         String
+  dataCriacao_Mensagem DateTime @default(now())
+  usuario              Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
 }

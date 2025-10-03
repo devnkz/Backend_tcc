@@ -2,9 +2,9 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { updateRespostaService } from "../../services/resposta/updateRespostaService";
 
 interface UpdateRespostaBody {
-  fkId_pergunta?: string;
-  fkId_usuario?: string;
-  resposta?: string;
+  fkId_pergunta: string;
+  fkId_usuario: string;
+  resposta: string;
 }
 
 interface UpdateRespostaParams {

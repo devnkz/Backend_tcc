@@ -2,15 +2,15 @@ import prismaClient from "../../prisma";
 
 interface UpdateRespostaProps {
   id: string;
-  fkId_pergunta?: string;
-  fkId_usuario?: string;
-  resposta?: string;
+  fkId_pergunta: string;
+  fkId_usuario: string;
+  resposta: string;
 }
 
 class updateRespostaService {
   async execute({ id, fkId_pergunta, fkId_usuario, resposta }: UpdateRespostaProps) {
-    if (!id) {
-      throw new Error("ID é obrigatório");
+    if (!id || !fkId_pergunta || !fkId_usuario || !resposta) {
+      throw new Error("Dados faltando");
     }
 
     const respostaAtualizada = await prismaClient.resposta.update({
