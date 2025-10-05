@@ -15,7 +15,7 @@ class CreateUserService {
     apelido_usuario,
     email_usuario,
     senha_usuario,
-    fkIdTipoUsuario = "7bd9763d-e2ba-42c5-a3a4-09de72f2feb0",
+    fkIdTipoUsuario = "dcf9817e-9d57-4f68-9b29-eb5ca87ee26c",
   }: CreateUserProps) {
     if (!nome_usuario || !apelido_usuario || !email_usuario || !senha_usuario  || !fkIdTipoUsuario) {
       throw new Error("Informações faltando");

@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import jwt from "jsonwebtoken";
 
-const SECRET = process.env.JWT_SECRET || "7qRO7AZLTpUi1pnoPSAo2nBFJBlDPn6S0P4iQw9gDuzujJDMJ9";
+const SECRET = process.env.JWT_SECRET || "meuSegredo123@!";
 
 export async function verifyToken(request: FastifyRequest, reply: FastifyReply) {
  const { token } = request.body as { token: string };

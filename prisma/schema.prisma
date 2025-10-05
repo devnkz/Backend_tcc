@@ -66,11 +66,12 @@ model Resposta {
 }
 
 model Grupo {
-  id_grupo     String   @id @default(uuid())
+  id_grupo     String     @id @default(uuid())
   nome_grupo   String
   fkId_usuario String
-  usuario      Usuarios @relation("GrupoCriador", fields: [fkId_usuario], references: [id_usuario])
+  usuario      Usuarios   @relation("GrupoCriador", fields: [fkId_usuario], references: [id_usuario])
   membros      Membro[]
+  mensagens    Mensagem[]
 }
 
 model Membro {
@@ -83,18 +84,21 @@ model Membro {
   @@unique([fkId_usuario, fkId_grupo])
 }
 
+model Mensagem {
+  id_mensagem          String   @id @default(uuid())
+  mensagem             String
+  fkId_usuario         String
+  fkId_grupo           String
+  dataCriacao_Mensagem DateTime @default(now())
+
+  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
+  grupo   Grupo    @relation(fields: [fkId_grupo], references: [id_grupo])
+}
+
 model Componente {
   id_componente   String     @id @default(uuid())
   nome_componente String
   fkId_curso      String
   curso           Curso      @relation(fields: [fkId_curso], references: [id_curso])
   perguntas       Pergunta[]
-}
-
-model Mensagem {
-  id_mensagem          String   @id @default(uuid())
-  mensagem             String
-  fkId_usuario         String
-  dataCriacao_Mensagem DateTime @default(now())
-  usuario              Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
 }
