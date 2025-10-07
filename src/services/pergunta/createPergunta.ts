@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreatePerguntaProps {
   fkId_usuario: string;
@@ -13,10 +14,12 @@ class CreatePerguntaService {
       throw new Error("Informações faltando");
     }
 
+    const perguntaValidada = validarTextoOuErro(pergunta);
+
     const perguntaCriada = await prismaClient.pergunta.create({
       data: {
         fkId_usuario,
-        pergunta,
+        pergunta: perguntaValidada.textoFiltrado,
         fkId_componente,
         fkId_curso
       },

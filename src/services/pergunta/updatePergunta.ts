@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdatePerguntaProps {
     id: string;
@@ -23,11 +24,13 @@ class UpdatePerguntaService {
             throw new Error("Você não tem permissão para atualizar esta pergunta");
         }
 
+        const perguntaValidada = validarTextoOuErro(pergunta);
+
         // Atualizar pergunta e retornar os dados modificados
         const updatedPergunta = await prismaClient.pergunta.update({
             where: { id_pergunta: id },
             data: {
-                pergunta,
+                pergunta: perguntaValidada.textoFiltrado,
                 fkId_componente: fkId_componente && fkId_componente.trim() !== "" 
                 ? fkId_componente 
                 : findPergunta.fkId_componente,

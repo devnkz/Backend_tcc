@@ -60,6 +60,20 @@ import { ListCursoController } from './controllers/curso/listCurso';
 import { UpdateCursoController } from './controllers/curso/updateCurso';
 import { DeleteCursoController } from './controllers/curso/deleteCurso';
 
+//imports denuncias
+
+import { CreateDenunciaController } from './controllers/denuncias/createDenunciaController';
+import { UpdateDenunciaController } from './controllers/denuncias/updateDenunciaController';
+import { ListDenunciaController } from './controllers/denuncias/listDenunciaController';
+import { DeleteDenunciaController } from './controllers/denuncias/deleteDenunciaController';
+
+//imports penalidades
+
+import { CreatePenalidadeController } from './controllers/penalidades/createPenalidadeController';
+import { ListPenalidadeController } from './controllers/penalidades/listPenalidadeController';
+import { UpdatePenalidadeController } from './controllers/penalidades/updatePenalidadeController';
+import { DeletePenalidadeController } from './controllers/penalidades/deletePenalidadeController';
+
 interface RequestParams {
   id: string;
 }
@@ -222,6 +236,39 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.delete("/curso/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteCursoController().handle(request, reply)
+    })
+
+    //Rotas denuncias 
+
+    fastify.post("/denuncia", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CreateDenunciaController().handle(request, reply)
+    })
+
+    fastify.get("/denuncia", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListDenunciaController().handle(request, reply)
+    })
+
+    fastify.delete("/denuncia/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new DeleteDenunciaController().handle(request, reply)
+    })
+
+
+    //Rotas Penalidades
+
+     fastify.post("/penalidade", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CreatePenalidadeController().handle(request, reply)
+    })
+
+    fastify.get("/penalidade", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListPenalidadeController().handle(request, reply)
+    })
+
+    fastify.put("/penalidade/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new UpdatePenalidadeController().handle(request, reply)
+    })
+
+    fastify.delete("/penalidade/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new DeletePenalidadeController().handle(request, reply)
     })
 
 }

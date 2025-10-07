@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdateUserProps {
     id: string;
@@ -20,12 +21,16 @@ class UpdateUserService {
             throw new Error("Usuário não encontrado");
         }
 
+        // Validação de texto ofensivo
+        const nomeValidado = validarTextoOuErro(nome_usuario);
+        const apelidoValidado = validarTextoOuErro(apelido_usuario);
+
         // Atualizar usuário e retornar os dados modificados
         const updatedUser = await prismaClient.usuarios.update({
             where: { id_usuario: id },
             data: { 
-                nome_usuario, 
-                apelido_usuario, 
+                nome_usuario: nomeValidado.textoFiltrado,
+                apelido_usuario: apelidoValidado.textoFiltrado,
                 email_usuario, 
                 senha_usuario,
                 foto_perfil 

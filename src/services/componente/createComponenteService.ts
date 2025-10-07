@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateComponenteProps {
   nome_componente: string;
@@ -11,9 +12,11 @@ class CreateComponenteService {
       throw new Error("Informações faltando");
     }
 
+    const nomeValidado = validarTextoOuErro(nome_componente);
+
     const componente = await prismaClient.componente.create({
       data: {
-        nome_componente,
+        nome_componente: nomeValidado.textoFiltrado,
         fkId_curso,
       },
       include: {

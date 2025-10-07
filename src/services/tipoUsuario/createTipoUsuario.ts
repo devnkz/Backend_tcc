@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateTipoUsuarioProps {
   nome_tipousuario: string;
@@ -11,9 +12,11 @@ class createTipoUsuarioService {
       throw new Error("Informacoes faltando");
     }
 
+    const nomeValidado = validarTextoOuErro(nome_tipousuario);
+
     const TipoUsuario = await prismaClient.tipoUsuario.create({
       data: {
-       nome_tipousuario,
+       nome_tipousuario: nomeValidado.textoFiltrado,
       },
     });
 

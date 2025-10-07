@@ -8,24 +8,27 @@ datasource db {
 }
 
 model Usuarios {
-  id_usuario      String  @id @default(uuid())
-  nome_usuario    String
-  apelido_usuario String
-  foto_perfil     String?
-  email_usuario   String  @unique
-  senha_usuario   String
+  id_usuario            String  @id @default(uuid())
+  nome_usuario          String
+  apelido_usuario       String
+  foto_perfil           String?
+  email_usuario         String  @unique
+  senha_usuario         String
+  credibilidade_usuario Int
 
   fkIdTipoUsuario String
   tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario])
 
-  dataCriacao_usuario DateTime   @default(now())
+  dataCriacao_usuario DateTime      @default(now())
   pergunta            Pergunta[]
   respostas           Resposta[]
   grupos              Membro[]
-  gruposCriados       Grupo[]    @relation("GrupoCriador")
-  Curso               Curso?     @relation(fields: [cursoId_curso], references: [id_curso])
+  gruposCriados       Grupo[]       @relation("GrupoCriador")
+  Curso               Curso?        @relation(fields: [cursoId_curso], references: [id_curso])
   cursoId_curso       String?
   Mensagem            Mensagem[]
+  Denuncias           Denuncias[]
+  Penalidades         Penalidades[]
 }
 
 model TipoUsuario {
@@ -101,4 +104,32 @@ model Componente {
   fkId_curso      String
   curso           Curso      @relation(fields: [fkId_curso], references: [id_curso])
   perguntas       Pergunta[]
+}
+
+model Denuncias {
+  id_denuncia              String   @id @default(uuid())
+  fkId_usuario             String
+  fkId_conteudo_denunciado String
+  descricao                String
+  nivel_denuncia           Int
+  status                   String   @default("pendente")
+  resultado                String
+  dataCriacao_denuncia     DateTime @default(now())
+
+  usuario    Usuarios     @relation(fields: [fkId_usuario], references: [id_usuario])
+  penalidade Penalidades? @relation("DenunciasToPenalidades")
+}
+
+model Penalidades {
+  id_penalidade          String   @id @default(uuid())
+  fkId_usuario           String
+  fkId_denuncia          String   @unique
+  banimento              String?
+  perder_credibilidade   String
+  descricao              String
+  ativa                  Boolean  @default(true)
+  dataCriacao_penalidade DateTime @default(now())
+
+  usuario  Usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
+  denuncia Denuncias @relation("DenunciasToPenalidades", fields: [fkId_denuncia], references: [id_denuncia])
 }

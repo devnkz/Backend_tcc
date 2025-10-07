@@ -7,11 +7,12 @@ interface CreateUserBody {
   email_usuario: string;
   senha_usuario: string;
   fkIdTipoUsuario: string;
+  credibilidade_usuario: number;
 }
 
 class CreateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { nome_usuario, apelido_usuario, email_usuario, senha_usuario, fkIdTipoUsuario } = request.body as CreateUserBody;
+    const { nome_usuario, apelido_usuario, email_usuario, senha_usuario, fkIdTipoUsuario, credibilidade_usuario } = request.body as CreateUserBody;
 
     const createUser = new CreateUserService();
 
@@ -21,7 +22,8 @@ class CreateUserController {
         apelido_usuario,
         email_usuario,
         senha_usuario,
-        fkIdTipoUsuario
+        fkIdTipoUsuario,
+        credibilidade_usuario,
       });
 
       return reply.send(user);

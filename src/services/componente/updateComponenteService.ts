@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdateComponenteProps {
   id: string;
@@ -17,7 +18,7 @@ class updateComponenteService {
         id_componente: id,
       },
       data: {
-        nome_componente,
+        nome_componente: typeof nome_componente === "string" ? validarTextoOuErro(nome_componente).textoFiltrado : undefined,
         fkId_curso,
       },
       include: {

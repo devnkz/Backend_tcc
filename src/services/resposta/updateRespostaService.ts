@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdateRespostaProps {
   id: string;
@@ -13,6 +14,8 @@ class updateRespostaService {
       throw new Error("Dados faltando");
     }
 
+    const respostaValidada = validarTextoOuErro(resposta);
+
     const respostaAtualizada = await prismaClient.resposta.update({
       where: {
         id_resposta: id,
@@ -20,7 +23,7 @@ class updateRespostaService {
       data: {
         fkId_pergunta,
         fkId_usuario,
-        resposta,
+        resposta: respostaValidada.textoFiltrado,
       },
       include: {
         usuario: {

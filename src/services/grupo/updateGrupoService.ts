@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdateGrupoProps {
   id: string;
@@ -15,7 +16,7 @@ class updateGrupoService {
     const grupoAtualizado = await prismaClient.grupo.update({
       where: { id_grupo: id },
       data: {
-        nome_grupo,
+        nome_grupo: typeof nome_grupo === "string" ? validarTextoOuErro(nome_grupo).textoFiltrado : undefined,
         membros: novosMembrosIds
           ? {
               create: novosMembrosIds.map((userId) => ({ 
