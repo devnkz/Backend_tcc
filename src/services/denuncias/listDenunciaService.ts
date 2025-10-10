@@ -9,6 +9,7 @@ class ListDenunciaService {
                         id_usuario: true,
                         nome_usuario: true,
                         apelido_usuario: true,
+                        credibilidade_usuario: true,
                     },
                 },
                 penalidade: {

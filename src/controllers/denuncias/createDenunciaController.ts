@@ -5,13 +5,14 @@ interface CreateDenunciaBody {
   fkId_usuario: string;
   fkId_conteudo_denunciado: string;
   nivel_denuncia: number;
-  descricao: string
+  descricao: string;
+  tipo_conteudo: string;
   resultado: string;
 }
 
 class CreateDenunciaController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { fkId_usuario, fkId_conteudo_denunciado, nivel_denuncia, resultado, descricao } = request.body as CreateDenunciaBody;
+    const { fkId_usuario, fkId_conteudo_denunciado, nivel_denuncia, resultado, descricao, tipo_conteudo } = request.body as CreateDenunciaBody;
 
     const createDenuncia = new CreateDenunciaService();
 
@@ -22,6 +23,7 @@ class CreateDenunciaController {
         nivel_denuncia,
         resultado,
         descricao,
+        tipo_conteudo,
       });
 
       return reply.send(denuncia);

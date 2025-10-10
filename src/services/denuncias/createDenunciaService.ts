@@ -4,14 +4,16 @@ interface CreateDenunciaProps {
   fkId_usuario: string;
   fkId_conteudo_denunciado: string;
   nivel_denuncia: number;
+  tipo_conteudo:string;
   resultado: string;
-  descricao: string
+  descricao: string;
 }
 
 class CreateDenunciaService {
   async execute({
     fkId_usuario,
     fkId_conteudo_denunciado,
+    tipo_conteudo,
     nivel_denuncia,
     resultado,
     descricao
@@ -37,7 +39,8 @@ class CreateDenunciaService {
         nivel_denuncia,
         resultado,
         status: "pendente",
-        descricao
+        descricao,
+        tipo_conteudo
       },
       include: {
         usuario: {

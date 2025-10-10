@@ -111,6 +111,7 @@ model Denuncias {
   fkId_usuario             String
   fkId_conteudo_denunciado String
   descricao                String
+  tipo_conteudo            String
   nivel_denuncia           Int
   status                   String   @default("pendente")
   resultado                String
