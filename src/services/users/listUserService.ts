@@ -10,6 +10,16 @@ class ListUserService {
                         nome_tipousuario: true,
                     },
                 },
+                Penalidades:{
+                    select: {
+                        id_penalidade: true,
+                        dataInicio_penalidade: true,
+                        dataFim_penalidade: true,
+                        perder_credibilidade: true,
+                        descricao: true,
+                        ativa: true,
+                    }
+                }
             },
         })
         return users;

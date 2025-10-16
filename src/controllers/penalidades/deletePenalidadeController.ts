@@ -3,7 +3,7 @@ import { DeletePenalidadeService } from "../../services/penalidades/deletePenali
 
 class DeletePenalidadeController {
     async handle(request: FastifyRequest, reply: FastifyReply) {
-        const { id } = request.query as { id: string }
+        const { id } = request.params as { id: string }
 
         const deletePenalidade = new DeletePenalidadeService();
         const penalidade = await deletePenalidade.execute({ id })

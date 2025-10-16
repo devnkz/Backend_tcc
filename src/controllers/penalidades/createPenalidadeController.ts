@@ -4,14 +4,15 @@ import { CreatePenalidadeService } from "../../services/penalidades/createPenali
 interface CreatePenalidadeBody {
   fkId_usuario: string;
   fkId_denuncia: string;
-  banimento?: string;
-  perder_credibilidade: string;
+  dataInicio_penalidade: Date;
+  dataFim_penalidade: Date;
+  perder_credibilidade: number;
   descricao: string;
 }
 
 class CreatePenalidadeController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { fkId_usuario, fkId_denuncia, banimento, perder_credibilidade, descricao } = request.body as CreatePenalidadeBody;
+    const { fkId_usuario, fkId_denuncia, dataInicio_penalidade, dataFim_penalidade, perder_credibilidade, descricao } = request.body as CreatePenalidadeBody;
 
     const createPenalidade = new CreatePenalidadeService();
 
@@ -19,7 +20,8 @@ class CreatePenalidadeController {
       const penalidade = await createPenalidade.execute({
         fkId_usuario,
         fkId_denuncia,
-        banimento,
+        dataInicio_penalidade,
+        dataFim_penalidade,
         perder_credibilidade,
         descricao,
       });

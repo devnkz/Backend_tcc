@@ -125,8 +125,9 @@ model Penalidades {
   id_penalidade          String   @id @default(uuid())
   fkId_usuario           String
   fkId_denuncia          String   @unique
-  banimento              String?
-  perder_credibilidade   String
+  dataInicio_penalidade  DateTime
+  dataFim_penalidade     DateTime
+  perder_credibilidade   Int
   descricao              String
   ativa                  Boolean  @default(true)
   dataCriacao_penalidade DateTime @default(now())

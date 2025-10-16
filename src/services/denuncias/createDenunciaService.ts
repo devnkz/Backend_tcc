@@ -18,9 +18,6 @@ class CreateDenunciaService {
     resultado,
     descricao
   }: CreateDenunciaProps) {
-    if (!fkId_usuario || !fkId_conteudo_denunciado || !nivel_denuncia || !resultado || !descricao) {
-      throw new Error("Informações faltando");
-    }
 
     // Verificar se o usuário existe
     const userExists = await prismaClient.usuarios.findUnique({
@@ -30,8 +27,7 @@ class CreateDenunciaService {
     if (!userExists) {
       throw new Error("Usuário não encontrado");
     }
-
-    // Criar denúncia
+    
     const denuncia = await prismaClient.denuncias.create({
       data: {
         fkId_usuario,

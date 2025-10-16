@@ -3,8 +3,9 @@ import prismaClient from "../../prisma";
 interface CreatePenalidadeProps {
   fkId_usuario: string;
   fkId_denuncia: string;
-  banimento?: string;
-  perder_credibilidade: string;
+  dataInicio_penalidade: Date;
+  dataFim_penalidade: Date;
+  perder_credibilidade: number;
   descricao: string;
 }
 
@@ -12,7 +13,8 @@ class CreatePenalidadeService {
   async execute({
     fkId_usuario,
     fkId_denuncia,
-    banimento,
+    dataInicio_penalidade,
+    dataFim_penalidade,
     perder_credibilidade,
     descricao
   }: CreatePenalidadeProps) {
@@ -47,34 +49,45 @@ class CreatePenalidadeService {
       throw new Error("Já existe uma penalidade para esta denúncia");
     }
 
-    // Criar penalidade
-    const penalidade = await prismaClient.penalidades.create({
-      data: {
-        fkId_usuario,
-        fkId_denuncia,
-        banimento,
-        perder_credibilidade,
-        descricao,
-        ativa: true
-      },
-      include: {
-        usuario: {
-          select: {
-            id_usuario: true,
-            nome_usuario: true,
-            apelido_usuario: true,
-          }
+    // Criar penalidade e atualizar credibilidade do usuário em uma transação
+    const [penalidade, usuarioAtualizado] = await prismaClient.$transaction([
+      prismaClient.penalidades.create({
+        data: {
+          fkId_usuario,
+          fkId_denuncia,
+          perder_credibilidade,
+          dataInicio_penalidade,
+          dataFim_penalidade,
+          descricao,
+          ativa: true
         },
-        denuncia: {
-          select: {
-            id_denuncia: true,
-            nivel_denuncia: true,
-            status: true,
-            resultado: true,
+        include: {
+          usuario: {
+            select: {
+              id_usuario: true,
+              nome_usuario: true,
+              apelido_usuario: true,
+            }
+          },
+          denuncia: {
+            select: {
+              id_denuncia: true,
+              nivel_denuncia: true,
+              status: true,
+              resultado: true,
+            }
           }
         }
-      },
-    });
+      }),
+      prismaClient.usuarios.update({
+        where: { id_usuario: fkId_usuario },
+        data: {
+          credibilidade_usuario: {
+            decrement: perder_credibilidade,
+          }
+        }
+      })
+    ]);
 
     return penalidade;
   }
