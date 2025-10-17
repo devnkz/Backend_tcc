@@ -8,13 +8,14 @@ class CreateGrupoService {
     createdById: string
   ) {
     const nomeValidado = validarTextoOuErro(nome_grupo);
+    const allMembrosIds = Array.from(new Set([createdById, ...membrosIds]));
 
     const grupo = await prismaClient.grupo.create({
       data: {
         nome_grupo: nomeValidado.textoFiltrado,
-        fkId_usuario: createdById, // 👈 adiciona o criador
+        fkId_usuario: createdById,
         membros: {
-          create: membrosIds.map((userId) => ({ 
+          create: allMembrosIds.map((userId) => ({ 
             fkId_usuario: userId 
           })),
         },
