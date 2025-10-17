@@ -4,6 +4,7 @@ import { CreateDenunciaService } from "../../services/denuncias/createDenunciaSe
 interface CreateDenunciaBody {
   fkId_usuario: string;
   fkId_conteudo_denunciado: string;
+  fkId_usuario_conteudo: string;
   nivel_denuncia: number;
   descricao: string;
   tipo_conteudo: string;
@@ -12,7 +13,7 @@ interface CreateDenunciaBody {
 
 class CreateDenunciaController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { fkId_usuario, fkId_conteudo_denunciado, nivel_denuncia, resultado, descricao, tipo_conteudo } = request.body as CreateDenunciaBody;
+    const { fkId_usuario, fkId_conteudo_denunciado, nivel_denuncia, resultado, descricao,fkId_usuario_conteudo,  tipo_conteudo } = request.body as CreateDenunciaBody;
 
     const createDenuncia = new CreateDenunciaService();
 
@@ -20,6 +21,7 @@ class CreateDenunciaController {
       const denuncia = await createDenuncia.execute({
         fkId_usuario,
         fkId_conteudo_denunciado,
+        fkId_usuario_conteudo,
         nivel_denuncia,
         resultado,
         descricao,

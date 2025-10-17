@@ -3,6 +3,7 @@ import prismaClient from "../../prisma";
 interface CreateDenunciaProps {
   fkId_usuario: string;
   fkId_conteudo_denunciado: string;
+  fkId_usuario_conteudo: string;
   nivel_denuncia: number;
   tipo_conteudo:string;
   resultado: string;
@@ -13,6 +14,7 @@ class CreateDenunciaService {
   async execute({
     fkId_usuario,
     fkId_conteudo_denunciado,
+    fkId_usuario_conteudo,
     tipo_conteudo,
     nivel_denuncia,
     resultado,
@@ -32,6 +34,7 @@ class CreateDenunciaService {
       data: {
         fkId_usuario,
         fkId_conteudo_denunciado,
+        fkId_usuario_conteudo,
         nivel_denuncia,
         resultado,
         status: "pendente",

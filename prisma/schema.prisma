@@ -110,6 +110,7 @@ model Denuncias {
   id_denuncia              String   @id @default(uuid())
   fkId_usuario             String
   fkId_conteudo_denunciado String
+  fkId_usuario_conteudo    String
   descricao                String
   tipo_conteudo            String
   nivel_denuncia           Int
