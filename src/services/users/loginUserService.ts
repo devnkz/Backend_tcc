@@ -36,7 +36,8 @@ class LoginUserService {
         id: findUser.id_usuario,
         nome_usuario: findUser.nome_usuario,
         apelido_usuario: findUser.apelido_usuario,
-        email_usuario: findUser.email_usuario
+        email_usuario: findUser.email_usuario,
+        tipo_usuario: findUser.tipoUsuario.nome_tipousuario
       },
       process.env.JWT_SECRET || "meuSegredo123@!",
       { expiresIn: "48h" }
