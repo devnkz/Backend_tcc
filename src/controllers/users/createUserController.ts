@@ -6,13 +6,20 @@ interface CreateUserBody {
   apelido_usuario: string;
   email_usuario: string;
   senha_usuario: string;
-  fkIdTipoUsuario: string;
-  credibilidade_usuario: number;
+  fkIdTipoUsuario?: string;
+  credibilidade_usuario?: number;
 }
 
 class CreateUserController {
   async handle(request: FastifyRequest, reply: FastifyReply) {
-    const { nome_usuario, apelido_usuario, email_usuario, senha_usuario, fkIdTipoUsuario, credibilidade_usuario } = request.body as CreateUserBody;
+    const {
+      nome_usuario,
+      apelido_usuario,
+      email_usuario,
+      senha_usuario,
+      fkIdTipoUsuario,
+      credibilidade_usuario,
+    } = request.body as CreateUserBody;
 
     const createUser = new CreateUserService();
 
@@ -26,10 +33,15 @@ class CreateUserController {
         credibilidade_usuario,
       });
 
-      return reply.send(user);
-    } catch (error) {
+      return reply.status(201).send(user);
+
+    } catch (error: any) {
       console.error("Erro ao criar usuário:", error);
-      return reply.status(500).send({ error: "Erro interno ao criar usuário." });
+
+      const status = error.status || 400;
+      const message = error.message || "Erro interno ao criar usuário.";
+
+      return reply.status(status).send({ error: message });
     }
   }
 }
