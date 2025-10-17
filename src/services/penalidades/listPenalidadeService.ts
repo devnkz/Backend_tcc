@@ -15,10 +15,12 @@ class ListPenalidadeService {
                     select: {
                         id_denuncia: true,
                         nivel_denuncia: true,
+                        fkId_conteudo_denunciado: true,
+                        tipo_conteudo: true,
                         status: true,
                         resultado: true,
                     }
-                }
+                },
             },
         })
         return penalidades;

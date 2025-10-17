@@ -16,8 +16,26 @@ class ListUserIdService {
               nome_tipousuario: true,
             },
           },
+          Penalidades: {
+            select: {
+              id_penalidade: true,
+              dataInicio_penalidade: true,
+              dataFim_penalidade: true,
+              perder_credibilidade: true,
+              descricao: true,
+              ativa: true,
+              denuncia: {
+                select: {
+                  id_denuncia: true,
+                  tipo_conteudo: true,
+                  fkId_conteudo_denunciado: true,
+                },
+              },
+            },
+          },
         },
       });
+
       return users;
     }
   }
