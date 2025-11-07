@@ -14,6 +14,8 @@ import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
 import { UpdateUserController } from './controllers/users/updateUserController';
 import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfilController ';
+import { CheckEmailController } from './controllers/users/checkEmailController';
+import { CheckTextController } from './controllers/users/checkTextController';
 
 //imports Perguntas
 
@@ -94,6 +96,14 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.get("/user", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListUserController().handle(request, reply)
+    })
+
+    fastify.get("/user/check-email", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CheckEmailController().handle(request, reply)
+    })
+
+    fastify.post("/user/validate-text", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CheckTextController().handle(request, reply)
     })
 
     fastify.get("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
