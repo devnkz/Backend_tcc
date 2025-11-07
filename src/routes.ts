@@ -14,6 +14,7 @@ import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
 import { UpdateUserController } from './controllers/users/updateUserController';
 import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfilController ';
+import { DeleteFotoPerfilController } from './controllers/users/deleteFotoPerfilController';
 import { CheckEmailController } from './controllers/users/checkEmailController';
 import { CheckTextController } from './controllers/users/checkTextController';
 
@@ -124,6 +125,9 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.post("/user/:id/foto", { preHandler: upload.single("foto") }, async (request, reply) => {
         return new UpdateFotoPerfilController().handle(request, reply);
+    });
+    fastify.delete("/user/:id/foto", async (request, reply) => {
+        return new DeleteFotoPerfilController().handle(request, reply);
     });
 
     //Rotas de Tipo Usuario
