@@ -29,6 +29,7 @@ model Usuarios {
   Mensagem            Mensagem[]
   Denuncias           Denuncias[]
   Penalidades         Penalidades[]
+  Notificacoes        Notificacoes[]
 }
 
 model TipoUsuario {
@@ -96,6 +97,11 @@ model Mensagem {
 
   usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
   grupo   Grupo    @relation(fields: [fkId_grupo], references: [id_grupo])
+
+  // Relação opcional para respostas (reply)
+  replyToId String?    @db.VarChar(191)
+  replyTo   Mensagem?  @relation("MensagemReply", fields: [replyToId], references: [id_mensagem])
+  replies   Mensagem[] @relation("MensagemReply")
 }
 
 model Componente {
@@ -135,4 +141,17 @@ model Penalidades {
 
   usuario  Usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
   denuncia Denuncias @relation("DenunciasToPenalidades", fields: [fkId_denuncia], references: [id_denuncia])
+}
+
+model Notificacoes {
+  id_notificacao          String   @id @default(uuid())
+  fkId_usuario            String
+  titulo                  String
+  mensagem                String
+  tipo                    String
+  lida                    Boolean  @default(false)
+  dataCriacao_notificacao DateTime @default(now())
+
+  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
+  @@index([fkId_usuario])
 }

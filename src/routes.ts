@@ -1,4 +1,4 @@
-import { FastifyInstance, FastifyPluginOptions, FastifyRequest, FastifyReply } from 'fastify';
+import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { verifyToken } from './utils/verifyToken';
 import { upload } from './config/multer';
 
@@ -13,7 +13,7 @@ import { ListUserIdController } from './controllers/users/listUserIdController';
 import { DeleteUserController } from './controllers/users/deleteUserController';
 import { LoginUserController } from './controllers/users/loginUserController';
 import { UpdateUserController } from './controllers/users/updateUserController';
-import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfilController ';
+import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfilController';
 import { DeleteFotoPerfilController } from './controllers/users/deleteFotoPerfilController';
 import { CheckEmailController } from './controllers/users/checkEmailController';
 import { CheckTextController } from './controllers/users/checkTextController';
@@ -76,12 +76,21 @@ import { CreatePenalidadeController } from './controllers/penalidades/createPena
 import { ListPenalidadeController } from './controllers/penalidades/listPenalidadeController';
 import { UpdatePenalidadeController } from './controllers/penalidades/updatePenalidadeController';
 import { DeletePenalidadeController } from './controllers/penalidades/deletePenalidadeController';
+// Notificações
+import { CreateNotificacaoController } from './controllers/notificacoes/createNotificacaoController';
+import { ListNotificacaoByUserController } from './controllers/notificacoes/listNotificacaoByUserController';
 
 interface RequestParams {
   id: string;
 }
 
-export async function routes(fastify: FastifyInstance, options: FastifyPluginOptions) {
+export async function routes(
+    fastify: FastifyInstance,
+) {
+    // Healthcheck simples para verificar disponibilidade do servidor
+    fastify.get("/health", async (_req: FastifyRequest, reply: FastifyReply) => {
+        return reply.code(200).send({ status: "ok" });
+    });
 
     //Rotas de Verificação de Token
 
@@ -119,7 +128,7 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
         return new LoginUserController().handle(request, reply)
     })
 
-    fastify.put("/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+    fastify.put("/user/:id", { preHandler: [authenticate] }, async (request: FastifyRequest, reply: FastifyReply) => {
         return new UpdateUserController().handle(request, reply)
     })
 
@@ -264,6 +273,18 @@ export async function routes(fastify: FastifyInstance, options: FastifyPluginOpt
 
     fastify.delete("/denuncia/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeleteDenunciaController().handle(request, reply)
+    })
+
+    fastify.put("/denuncia/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new UpdateDenunciaController().handle(request, reply)
+    })
+
+    fastify.post("/notificacao", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CreateNotificacaoController().handle(request, reply);
+    })
+
+    fastify.get("/notificacao/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListNotificacaoByUserController().handle(request, reply);
     })
 
 

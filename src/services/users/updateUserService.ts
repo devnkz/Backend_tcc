@@ -8,10 +8,11 @@ interface UpdateUserProps {
     email_usuario: string;
     senha_usuario: string;
     foto_perfil?: string;
+    fkIdTipoUsuario?: string; // permitir troca do tipo de usuário
 }
 
 class UpdateUserService {
-    async execute({ id, nome_usuario, apelido_usuario, email_usuario, senha_usuario, foto_perfil }: UpdateUserProps) {
+    async execute({ id, nome_usuario, apelido_usuario, email_usuario, senha_usuario, foto_perfil, fkIdTipoUsuario }: UpdateUserProps) {
         // Buscar usuário pelo ID
         const findUser = await prismaClient.usuarios.findUnique({
             where: { id_usuario: id }
@@ -33,7 +34,8 @@ class UpdateUserService {
                 apelido_usuario: apelidoValidado.textoFiltrado,
                 email_usuario, 
                 senha_usuario,
-                foto_perfil 
+                foto_perfil,
+                ...(fkIdTipoUsuario ? { fkIdTipoUsuario } : {})
             },
             include: {
                 tipoUsuario: true

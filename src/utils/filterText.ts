@@ -7,7 +7,7 @@ export type ResultadoAnalise = {
 };
 
 const palavras: string[] = [...words.words]
-
+// Pré-normaliza lista de palavrões e armazena em Set para comparação rápida
 function normalizarTexto(texto: string): string {
   return texto
     .toLowerCase()
@@ -21,20 +21,25 @@ function normalizarTexto(texto: string): string {
     .replace(/(\w)\1{2,}/g, "$1"); // reduz repetições de 3+ letras
 }
 
-export function filtrarTexto(texto: string): ResultadoAnalise {
-  const textoNormalizado = normalizarTexto(texto);
+const palavroesNormalizados = palavras.map((p) => normalizarTexto(p));
+const setPalavroes = new Set(palavroesNormalizados);
 
-  // Corrigido: verificar se existe palavra no array usando some
-  const contemPalavraOfensiva = palavras.some(palavra =>
-    textoNormalizado.includes(palavra)
-  );
+function tokenizar(textoNormalizado: string): string[] {
+  // mantém apenas letras/números após normalização
+  return textoNormalizado.match(/[a-z0-9]+/g) || [];
+}
+
+export function filtrarTexto(texto: string): ResultadoAnalise {
+  const textoNormalizado = normalizarTexto(texto || "");
+  // Evita falso positivo por substring: avalia tokens (palavras inteiras)
+  const tokens = tokenizar(textoNormalizado);
+  const contemPalavraOfensiva = tokens.some((tk) => setPalavroes.has(tk));
 
   let textoFiltrado = texto;
   if (contemPalavraOfensiva) {
-    textoFiltrado = texto.replace(/\b(\w+)\b/g, (palavra) =>
-      palavras.some(p => normalizarTexto(palavra) === normalizarTexto(p))
-        ? "*****"
-        : palavra
+    // Substitui apenas palavras inteiras consideradas ofensivas (após normalização)
+    textoFiltrado = (texto || "").replace(/\b(\w+)\b/g, (palavra) =>
+      setPalavroes.has(normalizarTexto(palavra)) ? "*****" : palavra
     );
   }
 

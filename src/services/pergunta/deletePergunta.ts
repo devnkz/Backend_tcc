@@ -3,10 +3,12 @@ import prismaClient from "../../prisma"
 interface DeletePerguntaProps {
   id: string
   deleteUser: string
+  deleteRole?: string
+  deleteEmail?: string
 }
 
 class DeletePerguntaService {
-  async execute({ id, deleteUser }: DeletePerguntaProps) {
+  async execute({ id, deleteUser, deleteRole, deleteEmail }: DeletePerguntaProps) {
     if (!id) {
       throw new Error("Id não foi enviado")
     }
@@ -24,8 +26,10 @@ class DeletePerguntaService {
       throw new Error("Pergunta não existe")
     }
 
-    // verifica se o dono é o mesmo que está tentando deletar
-    if (findPergunta.fkId_usuario !== deleteUser) {
+    const isAdmin = (deleteRole || "").toLowerCase() === "administrador" || (deleteEmail || "").toLowerCase() === "lilvhx@gmail.com";
+
+    // verifica se o dono é o mesmo que está tentando deletar, ou admin
+    if (findPergunta.fkId_usuario !== deleteUser && !isAdmin) {
       throw new Error(
         `Usuário sem permissão. deleteUser: ${deleteUser}, dono: ${findPergunta.fkId_usuario}`
       )

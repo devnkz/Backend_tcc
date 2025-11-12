@@ -17,7 +17,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
       return reply.status(401).send({ success: false, error: "Token inválido" });
     }
 
-    const decoded = jwt.verify(token, SECRET) as { id: string; [key: string]: any };
+  const decoded = jwt.verify(token, SECRET) as { id: string; tipo_usuario?: string; email_usuario?: string; [key: string]: any };
 
     console.log("💡 Payload do token:", decoded); // 👈 aqui você vê tudo que veio no token
 
@@ -25,7 +25,7 @@ export async function authenticate(request: FastifyRequest, reply: FastifyReply)
       return reply.status(401).send({ success: false, error: "Token inválido" });
     }
 
-    (request as any).user = { id: decoded.id };
+    (request as any).user = { id: decoded.id, role: decoded.tipo_usuario, email: decoded.email_usuario };
     return; // libera a rota
   } catch (err) {
     return reply.status(401).send({ success: false, error: "Token inválido ou expirado" });

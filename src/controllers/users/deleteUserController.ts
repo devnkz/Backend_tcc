@@ -6,9 +6,8 @@ class DeleteUserController {
         const { id } = request.query as { id: string }
 
         const deleteUser = new DeleteUserService;
-        const user = await deleteUser.execute({ id })
-
-        reply.send(user)
+        await deleteUser.execute({ id })
+        return reply.status(204).send()
     }
 }
 
