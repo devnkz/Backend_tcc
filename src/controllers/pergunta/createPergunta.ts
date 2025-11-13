@@ -21,6 +21,10 @@ class CreatePerguntaController {
       return reply.send(perguntaCriada);
     } catch (error: any) {
       console.error("Erro ao criar pergunta:", error.message);
+      // return 400 for validation errors, 500 otherwise
+      if (error && error.name === "ValidationError") {
+        return reply.status(400).send({ error: error.message });
+      }
       return reply.status(500).send({ error: error.message });
     }
   }
