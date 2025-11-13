@@ -4,7 +4,7 @@ import { UpdateUserService } from "../../services/users/updateUserService";
 // Apenas administradores podem trocar fkIdTipoUsuario; usuários comuns podem alterar seus próprios dados básicos
 function canChangeTipoUsuario(requestingRole?: string) {
     const r = requestingRole?.toLowerCase();
-    return r === "adm" || r === "admin";
+    return r === "admin" || r === "administrador";
 }
 
 class UpdateUserController {

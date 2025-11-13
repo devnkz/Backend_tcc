@@ -28,6 +28,11 @@ class ListGruposDoUsuarioService {
             apelido_usuario: true,
           },
         },
+        _count: {
+          select: {
+            mensagens: true
+          }
+        }
       },
     });
 

@@ -26,7 +26,8 @@ class DeletePerguntaService {
       throw new Error("Pergunta não existe")
     }
 
-    const isAdmin = (deleteRole || "").toLowerCase() === "administrador" || (deleteEmail || "").toLowerCase() === "lilvhx@gmail.com";
+    const roleNormalized = (deleteRole || "").toLowerCase();
+    const isAdmin = roleNormalized === "admin" || roleNormalized === "administrador";
 
     // verifica se o dono é o mesmo que está tentando deletar, ou admin
     if (findPergunta.fkId_usuario !== deleteUser && !isAdmin) {

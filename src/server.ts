@@ -58,7 +58,14 @@ const start = async () => {
         const mensagens = await prismaClient.mensagem.findMany({
           where: { fkId_grupo: groupId },
           orderBy: { dataCriacao_Mensagem: "asc" },
-          // Não usar include avançado para evitar erro de tipos desatualizados
+          select: {
+            id_mensagem: true,
+            mensagem: true,
+            fkId_usuario: true,
+            fkId_grupo: true,
+            dataCriacao_Mensagem: true,
+            replyToId: true,
+          },
         });
         socket.emit("historico", mensagens);
       } catch (e) {
@@ -70,7 +77,7 @@ const start = async () => {
   // Nova mensagem
     socket.on("nova_mensagem", async (msg) => {
       try {
-        const { text, userId, grupoId } = msg;
+        const { text, userId, grupoId, replyTo } = msg;
         if (!grupoId || !userId || !text || typeof text !== "string") {
           console.error("Payload de mensagem inválido:", msg);
           return;
@@ -80,12 +87,25 @@ const start = async () => {
             mensagem: text,
             fkId_usuario: userId,
             fkId_grupo: grupoId,
+            replyToId: replyTo || null,
           },
         });
         io.to(grupoId).emit("mensagem_recebida", msgSalva);
       } catch (error) {
         console.error("Erro ao enviar mensagem:", error);
       }
+    });
+
+    // Eventos de digitação
+    socket.on("typing", ({ userId, grupoId }) => {
+      console.log("⌨️ Backend recebeu typing de:", userId, "para grupo:", grupoId);
+      socket.to(grupoId).emit("user_typing", { userId });
+      console.log("📤 Enviado user_typing para sala:", grupoId);
+    });
+
+    socket.on("stop_typing", ({ userId, grupoId }) => {
+      console.log("⏹️ Backend recebeu stop_typing de:", userId);
+      socket.to(grupoId).emit("user_stop_typing", { userId });
     });
 
     socket.on("disconnect", () => {

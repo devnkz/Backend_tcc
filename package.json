@@ -21,20 +21,25 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.30",
     "@types/socket.io": "^3.0.1",
-    "prisma": "^6.17.0",
+    "prisma": "^6.19.0",
     "typescript": "^5.8.3"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",
     "@fastify/multipart": "^9.2.1",
     "@fastify/static": "^8.2.0",
-    "@prisma/client": "^6.17.0",
+    "@gsap/react": "^2.1.2",
+    "@prisma/client": "^6.19.0",
+    "@react-three/drei": "^10.7.6",
+    "@react-three/fiber": "^9.4.0",
     "bad-words-brasil": "^1.0.3",
     "bad-words-next": "^3.1.1",
     "bcrypt": "^6.0.0",
     "fastify": "^5.3.3",
     "fastify-multer": "^2.0.3",
+    "gsap": "^3.13.0",
     "jsonwebtoken": "^9.0.2",
+    "three": "^0.181.1",
     "tsx": "^4.19.4"
   }
 }

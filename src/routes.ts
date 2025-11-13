@@ -69,6 +69,7 @@ import { CreateDenunciaController } from './controllers/denuncias/createDenuncia
 import { UpdateDenunciaController } from './controllers/denuncias/updateDenunciaController';
 import { ListDenunciaController } from './controllers/denuncias/listDenunciaController';
 import { DeleteDenunciaController } from './controllers/denuncias/deleteDenunciaController';
+import { CheckDenunciaController } from './controllers/denuncias/checkDenunciaController';
 
 //imports penalidades
 
@@ -269,6 +270,10 @@ export async function routes(
 
     fastify.get("/denuncia", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListDenunciaController().handle(request, reply)
+    })
+
+    fastify.get("/denuncia/check", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CheckDenunciaController().handle(request, reply)
     })
 
     fastify.delete("/denuncia/:id", async (request: FastifyRequest, reply: FastifyReply) => {
