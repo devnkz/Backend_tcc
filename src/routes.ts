@@ -77,9 +77,12 @@ import { CreatePenalidadeController } from './controllers/penalidades/createPena
 import { ListPenalidadeController } from './controllers/penalidades/listPenalidadeController';
 import { UpdatePenalidadeController } from './controllers/penalidades/updatePenalidadeController';
 import { DeletePenalidadeController } from './controllers/penalidades/deletePenalidadeController';
+
 // Notificações
+
 import { CreateNotificacaoController } from './controllers/notificacoes/createNotificacaoController';
 import { ListNotificacaoByUserController } from './controllers/notificacoes/listNotificacaoByUserController';
+import { DeleteNotificacaoController } from './controllers/notificacoes/deleteNotificacaoController';
 
 interface RequestParams {
   id: string;
@@ -284,12 +287,18 @@ export async function routes(
         return new UpdateDenunciaController().handle(request, reply)
     })
 
+    //Rotas Notificações
+
     fastify.post("/notificacao", async (request: FastifyRequest, reply: FastifyReply) => {
         return new CreateNotificacaoController().handle(request, reply);
     })
 
     fastify.get("/notificacao/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListNotificacaoByUserController().handle(request, reply);
+    })
+
+    fastify.delete("/notificacao/:id_notificacao", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new DeleteNotificacaoController().handle(request, reply);
     })
 
 
