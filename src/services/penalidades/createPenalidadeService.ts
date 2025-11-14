@@ -18,39 +18,32 @@ class CreatePenalidadeService {
     perder_credibilidade,
     descricao
   }: CreatePenalidadeProps) {
+
     if (!fkId_usuario || !fkId_denuncia || !perder_credibilidade || !descricao) {
       throw new Error("Informações faltando");
     }
 
-    // Verificar se o usuário existe
     const userExists = await prismaClient.usuarios.findUnique({
       where: { id_usuario: fkId_usuario }
     });
+    if (!userExists) throw new Error("Usuário não encontrado");
 
-    if (!userExists) {
-      throw new Error("Usuário não encontrado");
-    }
-
-    // Verificar se a denúncia existe
     const denunciaExists = await prismaClient.denuncias.findUnique({
       where: { id_denuncia: fkId_denuncia }
     });
+    if (!denunciaExists) throw new Error("Denúncia não encontrada");
 
-    if (!denunciaExists) {
-      throw new Error("Denúncia não encontrada");
-    }
-
-    // Verificar se já existe uma penalidade para esta denúncia
     const existingPenalidade = await prismaClient.penalidades.findUnique({
       where: { fkId_denuncia: fkId_denuncia }
     });
+    if (existingPenalidade) throw new Error("Já existe uma penalidade para esta denúncia");
 
-    if (existingPenalidade) {
-      throw new Error("Já existe uma penalidade para esta denúncia");
-    }
+    // 🔥 ID do usuário que realizou a denúncia
+    const autorDenuncia = denunciaExists.fkId_usuario;
 
-    // Criar penalidade e atualizar credibilidade do usuário em uma transação
-    const [penalidade, usuarioAtualizado] = await prismaClient.$transaction([
+    const [penalidade] = await prismaClient.$transaction([
+
+      // 1) Criar penalidade
       prismaClient.penalidades.create({
         data: {
           fkId_usuario,
@@ -60,31 +53,33 @@ class CreatePenalidadeService {
           dataFim_penalidade,
           descricao,
           ativa: true
-        },
-        include: {
-          usuario: {
-            select: {
-              id_usuario: true,
-              nome_usuario: true,
-              apelido_usuario: true,
-            }
-          },
-          denuncia: {
-            select: {
-              id_denuncia: true,
-              nivel_denuncia: true,
-              status: true,
-              resultado: true,
-            }
-          }
         }
       }),
+
+      // 2) Atualizar credibilidade do usuário penalizado
       prismaClient.usuarios.update({
         where: { id_usuario: fkId_usuario },
         data: {
           credibilidade_usuario: {
             decrement: perder_credibilidade,
           }
+        }
+      }),
+
+      // 3) Atualizar status da denúncia
+      prismaClient.denuncias.update({
+        where: { id_denuncia: fkId_denuncia },
+        data: { status: "concluido" }
+      }),
+
+      // 4) Criar notificação para o usuário que FEZ a denúncia
+      prismaClient.notificacoes.create({
+        data: {
+          fkId_usuario: autorDenuncia,
+          titulo: "Denúncia concluída",
+          mensagem: `A denúncia que você realizou foi analisada e resultou em uma penalidade para o usuário.`,
+          tipo: "Denuncia_concluida",
+          lida: false
         }
       })
     ]);

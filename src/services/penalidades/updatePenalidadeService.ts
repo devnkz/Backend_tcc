@@ -5,13 +5,13 @@ interface UpdatePenalidadeProps {
     fkId_usuario: string;
     fkId_denuncia: string;
     banimento?: string;
-    perder_credibilidade: string;
+    perder_credibilidade: number;
     descricao: string;
     ativa: boolean;
 }
 
 class UpdatePenalidadeService {
-    async execute({ id, fkId_usuario, fkId_denuncia, banimento, perder_credibilidade, descricao, ativa }: UpdatePenalidadeProps) {
+    async execute({ id, fkId_usuario, fkId_denuncia, perder_credibilidade, descricao, ativa }: UpdatePenalidadeProps) {
         // Buscar penalidade pelo ID
         const findPenalidade = await prismaClient.penalidades.findUnique({
             where: { id_penalidade: id }
@@ -45,7 +45,6 @@ class UpdatePenalidadeService {
             data: { 
                 fkId_usuario, 
                 fkId_denuncia, 
-                banimento, 
                 perder_credibilidade, 
                 descricao,
                 ativa 
