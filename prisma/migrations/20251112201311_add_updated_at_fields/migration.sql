@@ -16,4 +16,7 @@ ALTER TABLE `Notificacoes` ADD CONSTRAINT `Notificacoes_fkId_usuario_fkey` FOREI
 
 -- RedefineIndex
 CREATE INDEX `Notificacoes_fkId_usuario_idx` ON `Notificacoes`(`fkId_usuario`);
-DROP INDEX `Notificacoes_fkId_usuario_fkey` ON `notificacoes`;
+-- NOTE: original migration attempted to DROP INDEX `Notificacoes_fkId_usuario_fkey` but
+-- the index did not exist on some databases (shadow DB). Removing the DROP INDEX
+-- prevents the migration from failing. If you need to remove an old index, do it
+-- manually against the target DB after verifying the index name.

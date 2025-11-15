@@ -17,6 +17,7 @@ import { UpdateFotoPerfilController } from './controllers/users/UpdateFotoPerfil
 import { DeleteFotoPerfilController } from './controllers/users/deleteFotoPerfilController';
 import { CheckEmailController } from './controllers/users/checkEmailController';
 import { CheckTextController } from './controllers/users/checkTextController';
+import { CheckApelidoController } from './controllers/users/checkApelidoController';
 
 //imports Perguntas
 
@@ -114,6 +115,10 @@ export async function routes(
 
     fastify.get("/user/check-email", async (request: FastifyRequest, reply: FastifyReply) => {
         return new CheckEmailController().handle(request, reply)
+    })
+
+    fastify.get("/user/check-apelido", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CheckApelidoController().handle(request, reply)
     })
 
     fastify.post("/user/validate-text", async (request: FastifyRequest, reply: FastifyReply) => {
