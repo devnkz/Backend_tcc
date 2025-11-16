@@ -11,6 +11,7 @@ CREATE TABLE `Usuarios` (
     `dataCriacao_usuario` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `cursoId_curso` VARCHAR(191) NULL,
 
+    UNIQUE INDEX `Usuarios_apelido_usuario_key`(`apelido_usuario`),
     UNIQUE INDEX `Usuarios_email_usuario_key`(`email_usuario`),
     PRIMARY KEY (`id_usuario`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -145,7 +146,7 @@ CREATE TABLE `Notificacoes` (
 -- CreateTable
 CREATE TABLE `CodigoVerificacaoEmail` (
     `id_codigoverificacaoemail` VARCHAR(191) NOT NULL,
-    `fkId_usuario` VARCHAR(191) NOT NULL,
+    `email_usuario` VARCHAR(191) NOT NULL,
     `codigo` VARCHAR(191) NOT NULL,
     `dataCriacao_codigo` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dataExpiracao_codigo` DATETIME(3) NOT NULL,
@@ -208,4 +209,4 @@ ALTER TABLE `Penalidades` ADD CONSTRAINT `Penalidades_fkId_denuncia_fkey` FOREIG
 ALTER TABLE `Notificacoes` ADD CONSTRAINT `Notificacoes_fkId_usuario_fkey` FOREIGN KEY (`fkId_usuario`) REFERENCES `Usuarios`(`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `CodigoVerificacaoEmail` ADD CONSTRAINT `CodigoVerificacaoEmail_fkId_usuario_fkey` FOREIGN KEY (`fkId_usuario`) REFERENCES `Usuarios`(`id_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `CodigoVerificacaoEmail` ADD CONSTRAINT `CodigoVerificacaoEmail_email_usuario_fkey` FOREIGN KEY (`email_usuario`) REFERENCES `Usuarios`(`email_usuario`) ON DELETE RESTRICT ON UPDATE CASCADE;
