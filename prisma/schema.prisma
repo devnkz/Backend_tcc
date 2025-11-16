@@ -19,17 +19,18 @@ model Usuarios {
   fkIdTipoUsuario String
   tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario])
 
-  dataCriacao_usuario DateTime      @default(now())
-  pergunta            Pergunta[]
-  respostas           Resposta[]
-  grupos              Membro[]
-  gruposCriados       Grupo[]       @relation("GrupoCriador")
-  Curso               Curso?        @relation(fields: [cursoId_curso], references: [id_curso])
-  cursoId_curso       String?
-  Mensagem            Mensagem[]
-  Denuncias           Denuncias[]
-  Penalidades         Penalidades[]
-  Notificacoes        Notificacoes[]
+  dataCriacao_usuario     DateTime                 @default(now())
+  pergunta                Pergunta[]
+  respostas               Resposta[]
+  grupos                  Membro[]
+  gruposCriados           Grupo[]                  @relation("GrupoCriador")
+  Curso                   Curso?                   @relation(fields: [cursoId_curso], references: [id_curso])
+  cursoId_curso           String?
+  Mensagem                Mensagem[]
+  Denuncias               Denuncias[]
+  Penalidades             Penalidades[]
+  Notificacoes            Notificacoes[]
+  codigoVerificacaoEmails CodigoVerificacaoEmail[]
 }
 
 model TipoUsuario {
@@ -47,27 +48,27 @@ model Curso {
 }
 
 model Pergunta {
-  id_pergunta             String     @id @default(uuid())
-  pergunta                String
-  fkId_usuario            String
-  usuario                 Usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
-  fkId_componente         String
-  componente              Componente @relation(fields: [fkId_componente], references: [id_componente])
-  dataCriacao_pergunta    DateTime   @default(now())
-  dataAtualizacao_pergunta DateTime? @updatedAt
-  fkId_curso              String
-  curso                   Curso      @relation(fields: [fkId_curso], references: [id_curso])
-  respostas               Resposta[]
+  id_pergunta              String     @id @default(uuid())
+  pergunta                 String
+  fkId_usuario             String
+  usuario                  Usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
+  fkId_componente          String
+  componente               Componente @relation(fields: [fkId_componente], references: [id_componente])
+  dataCriacao_pergunta     DateTime   @default(now())
+  dataAtualizacao_pergunta DateTime?  @updatedAt
+  fkId_curso               String
+  curso                    Curso      @relation(fields: [fkId_curso], references: [id_curso])
+  respostas                Resposta[]
 }
 
 model Resposta {
-  id_resposta             String   @id @default(uuid())
-  resposta                String
-  fkId_usuario            String
-  fkId_pergunta           String
-  usuario                 Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-  pergunta                Pergunta @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade)
-  dataCriacao_resposta    DateTime @default(now())
+  id_resposta              String    @id @default(uuid())
+  resposta                 String
+  fkId_usuario             String
+  fkId_pergunta            String
+  usuario                  Usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
+  pergunta                 Pergunta  @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade)
+  dataCriacao_resposta     DateTime  @default(now())
   dataAtualizacao_resposta DateTime? @updatedAt
 }
 
@@ -155,5 +156,16 @@ model Notificacoes {
   dataCriacao_notificacao DateTime @default(now())
 
   usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
+
   @@index([fkId_usuario])
+}
+
+model CodigoVerificacaoEmail {
+  id_codigoverificacaoemail String   @id @default(uuid())
+  fkId_usuario              String
+  codigo                    String
+  dataCriacao_codigo        DateTime @default(now())
+  dataExpiracao_codigo      DateTime
+
+  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
 }

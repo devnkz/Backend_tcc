@@ -18,8 +18,9 @@ async function main() {
 
   for (const role of allowed) {
     const found = await prisma.tipoUsuario.findFirst({
-      where: { nome_tipousuario: { equals: role, mode: "insensitive" } as any },
+      where: { nome_tipousuario: role }, // MySQL já é case-insensitive
     });
+
     if (found) {
       ensure[role] = found.id_tipousuario;
     } else {
@@ -30,15 +31,18 @@ async function main() {
     }
   }
 
-  // Reassign users of non-allowed roles to a default/canonical role, then delete the extras
+  // Reassign users of non-allowed roles to a default/canonical role, then delete extras
   const allTipos = await prisma.tipoUsuario.findMany();
   const allowedIds = new Set(Object.values(ensure));
   const nonAllowed = allTipos.filter((t) => !allowedIds.has(t.id_tipousuario));
+
   if (nonAllowed.length > 0) {
     const defaultId = ensure["aluno"]; // fallback
+
     for (const t of nonAllowed) {
       const name = (t.nome_tipousuario || "").toLowerCase();
       let target = defaultId;
+
       if (["adm", "admin", "administrador"].includes(name)) target = ensure["admin"];
       if (["prof", "professor"].includes(name)) target = ensure["professor"];
       if (["aluno", "estudante", "estudantes"].includes(name)) target = ensure["aluno"];
