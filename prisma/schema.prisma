@@ -10,7 +10,7 @@ datasource db {
 model Usuarios {
   id_usuario            String  @id @default(uuid())
   nome_usuario          String
-  apelido_usuario       String
+  apelido_usuario       String   @unique
   foto_perfil           String?
   email_usuario         String  @unique
   senha_usuario         String
