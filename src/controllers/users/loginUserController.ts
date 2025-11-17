@@ -8,6 +8,7 @@ class LoginUserController {
         try {
             const loginUser = new LoginUserService;
             const user = await loginUser.execute({ email_usuario, senha_usuario })
+
             return reply.send(user)
         } catch (error: any) {
             // map known service errors to appropriate HTTP status codes

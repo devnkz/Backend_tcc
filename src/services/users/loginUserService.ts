@@ -20,6 +20,8 @@ class LoginUserService {
       }
     });
 
+    console.log(findUser?.email_usuario);
+
     if (!findUser) {
       throw new Error("Usuário não encontrado");
     }

@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import  prismaClient  from "../prisma";
+import prismaClient from "../prisma";
 
 interface VerifyCodeInput {
   codigo: string;
@@ -8,13 +8,14 @@ interface VerifyCodeInput {
 
 class VerifyCodeService {
   async execute({ codigo, email_usuario }: VerifyCodeInput) {
+
     const record = await prismaClient.codigoVerificacaoEmail.findFirst({
-      orderBy:{
-        dataCriacao_codigo: 'desc'
+      orderBy: {
+        dataCriacao_codigo: "desc",
       },
       where: {
         codigo,
-        email_usuario
+        email_usuario,
       },
     });
 
@@ -24,7 +25,7 @@ class VerifyCodeService {
       throw err;
     }
 
-    // 2. Verificar expiração
+    // Verificar expiração
     const now = new Date();
     if (record.dataExpiracao_codigo && record.dataExpiracao_codigo < now) {
       const err: any = new Error("Código expirado.");
@@ -32,12 +33,11 @@ class VerifyCodeService {
       throw err;
     }
 
-    // ✅ 3. Buscar usuário pelo telefone
     const user = await prismaClient.usuarios.findFirst({
-      where: { email_usuario: email_usuario },
+      where: { email_usuario: record.email_usuario },
       include: {
-        tipoUsuario: true
-      }
+        tipoUsuario: true,
+      },
     });
 
     if (!user) {
@@ -50,17 +50,19 @@ class VerifyCodeService {
       where: { id_codigoverificacaoemail: record.id_codigoverificacaoemail },
     });
 
-     const token = jwt.sign(
-          {
-            id: user.id_usuario,
-            nome_usuario: user.nome_usuario,
-            apelido_usuario: user.apelido_usuario,
-            email_usuario: user.email_usuario,
-            tipo_usuario: user.tipoUsuario.nome_tipousuario
-          },
-          process.env.JWT_SECRET || "meuSegredo123@!",
-          { expiresIn: "48h" }
-        );
+    const token = jwt.sign(
+      {
+        id: user.id_usuario,
+        nome_usuario: user.nome_usuario,
+        apelido_usuario: user.apelido_usuario,
+        email_usuario: user.email_usuario,
+        tipo_usuario: user.tipoUsuario.nome_tipousuario,
+      },
+      process.env.JWT_SECRET || "meuSegredo123@!",
+      { expiresIn: "48h" }
+    );
+
+    console.log("TOKEN GERADO PARA:", user.email_usuario);
 
     return {
       message: "Código verificado com sucesso.",
