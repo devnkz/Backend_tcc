@@ -39,6 +39,8 @@
     "fastify-multer": "^2.0.3",
     "gsap": "^3.13.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^7.0.10",
+    "resend": "^6.4.2",
     "three": "^0.181.1",
     "tsx": "^4.19.4"
   }

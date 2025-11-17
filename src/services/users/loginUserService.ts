@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import prismaClient from "../../prisma";
+import { enviarCodigo } from "../../utils/mailer";
 
 interface LoginUserProps {
   email_usuario: string;
@@ -40,6 +41,8 @@ class LoginUserService {
         dataExpiracao_codigo: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
+
+    await enviarCodigo(email_usuario, generatedCode);
 
     return { user: findUser };
   }
