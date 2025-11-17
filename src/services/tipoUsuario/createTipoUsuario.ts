@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateTipoUsuarioProps {
@@ -26,17 +27,18 @@ class createTipoUsuarioService {
       administrador: "admin",
     };
     const canonical = mapCanon[raw] || (raw as any);
+    const label = canonical.charAt(0).toUpperCase() + canonical.slice(1);
     const allowed = new Set(["aluno", "professor", "admin"]);
     if (!allowed.has(canonical)) {
       throw new Error("Tipo de usuário inválido. Permitidos: aluno, professor, admin");
     }
 
     // Verificar se já existem 3 tipos cadastrados (limite)
-    const total = await prismaClient.tipoUsuario.count();
+    const total = await prismaClient.tipousuario.count();
     if (total >= 3) {
       // Permitir apenas se estiver tentando criar um que ainda não exista e substituir não é permitido aqui
-      const exists = await prismaClient.tipoUsuario.findFirst({
-        where: { nome_tipousuario: { equals: canonical, mode: "insensitive" } as any },
+      const exists = await prismaClient.tipousuario.findFirst({
+        where: { nome_tipousuario: { in: [canonical, label] } },
       });
       if (exists) {
         return exists; // idempotente
@@ -45,15 +47,16 @@ class createTipoUsuarioService {
     }
 
     // Evitar duplicidade por nome (case-insensitive)
-    const existing = await prismaClient.tipoUsuario.findFirst({
-      where: { nome_tipousuario: { equals: canonical, mode: "insensitive" } as any },
+    const existing = await prismaClient.tipousuario.findFirst({
+      where: { nome_tipousuario: { in: [canonical, label] } },
     });
     if (existing) return existing;
 
     // Persistir com capitalização amigável
-    const label = canonical.charAt(0).toUpperCase() + canonical.slice(1);
-    const TipoUsuario = await prismaClient.tipoUsuario.create({
+    // label variable already defined above
+    const TipoUsuario = await prismaClient.tipousuario.create({
       data: {
+        id_tipousuario: randomUUID(),
         nome_tipousuario: label,
       },
     });

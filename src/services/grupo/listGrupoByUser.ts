@@ -4,24 +4,24 @@ class ListGruposDoUsuarioService {
   async execute(userId: string) {
     const grupos = await prismaClient.grupo.findMany({
       where: {
-        membros: {
+        membro: {
           some: { fkId_usuario: userId },
         },
       },
       include: {
-        membros: {
-          include: { 
-            usuario: {
+        membro: {
+          include: {
+            usuarios: {
               select: {
                 id_usuario: true,
                 nome_usuario: true,
                 apelido_usuario: true,
-                foto_perfil: true
-              }
-            }
+                foto_perfil: true,
+              },
+            },
           },
         },
-        usuario: {
+        usuarios: {
           select: {
             id_usuario: true,
             nome_usuario: true,
@@ -30,7 +30,7 @@ class ListGruposDoUsuarioService {
         },
         _count: {
           select: {
-            mensagens: true
+            mensagem: true
           }
         }
       },

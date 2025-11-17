@@ -20,7 +20,7 @@ export class DeleteFotoPerfilService {
     const updated = await prismaClient.usuarios.update({
       where: { id_usuario: id },
       data: { foto_perfil: null },
-      include: { tipoUsuario: true }
+      include: { tipousuario: true }
     });
 
     // Remove arquivo físico se possível (ignore erros silenciosamente)

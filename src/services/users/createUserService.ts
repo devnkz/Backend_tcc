@@ -1,5 +1,6 @@
 import prismaClient from "../../prisma";
 import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateUserProps {
@@ -17,10 +18,10 @@ class CreateUserService {
     apelido_usuario,
     email_usuario,
     senha_usuario,
-    fkIdTipoUsuario = "dcf9817e-9d57-4f68-9b29-eb5ca87ee26c",
+    fkIdTipoUsuario,
     credibilidade_usuario = 46,
   }: CreateUserProps) {
-    if (!nome_usuario || !apelido_usuario || !email_usuario || !senha_usuario || !fkIdTipoUsuario) {
+    if (!nome_usuario || !apelido_usuario || !email_usuario || !senha_usuario) {
       throw { status: 400, message: "Informações faltando" };
     }
 
@@ -55,7 +56,29 @@ class CreateUserService {
     const apelidoNormalized = normalize(apelidoTrim);
 
     // check uniqueness using normalized form
-    const existingApelido = await prismaClient.usuarios.findFirst({ where: { apelido_usuario: apelidoNormalized } });
+    let existingApelido: any = null;
+    try {
+      existingApelido = await prismaClient.usuarios.findFirst({ where: { apelido_usuario: apelidoNormalized } });
+    } catch (e: any) {
+      // Prisma P2022 can occur when the Prisma schema expects a DB column
+      // that is not present in the actual database (migration not applied).
+      // If that happens specifically for `ultimaAlteracao_apelido`, fall
+      // back to a minimal select to avoid throwing a 500 for the whole request.
+      if (e?.code === "P2022" && String(e?.meta?.column || "").includes("ultimaAlteracao_apelido")) {
+        console.warn("Fallback apelido lookup due to missing DB column ultimaAlteracao_apelido");
+        try {
+          existingApelido = await prismaClient.usuarios.findFirst({
+            where: { apelido_usuario: apelidoNormalized },
+            select: { id_usuario: true, apelido_usuario: true },
+          });
+        } catch (inner) {
+          // If even the fallback fails, rethrow the original error to be handled below
+          throw e;
+        }
+      } else {
+        throw e;
+      }
+    }
     if (existingApelido) {
       throw { status: 409, message: "Este apelido já está em uso por outro usuário." };
     }
@@ -63,18 +86,35 @@ class CreateUserService {
     const apelidoValidado = validarTextoOuErro(apelidoTrim);
     const hashedPassword = await bcrypt.hash(senha_usuario, 10);
 
+    // Ensure every new account is created with the 'Aluno' tipo
+    // Find existing 'Aluno' tipo (case-insensitive) or create it if missing
+    let resolvedTipoId: string | undefined;
+    const tipoAluno = await prismaClient.tipousuario.findFirst({
+      where: { nome_tipousuario: { in: ["Aluno", "aluno", "ALUNO", "estudante"] } },
+    });
+    if (tipoAluno) {
+      resolvedTipoId = tipoAluno.id_tipousuario;
+    } else {
+      const created = await prismaClient.tipousuario.create({
+        data: { id_tipousuario: randomUUID(), nome_tipousuario: "Aluno" },
+      });
+      resolvedTipoId = created.id_tipousuario;
+    }
+
+
     try {
       const user = await prismaClient.usuarios.create({
-          data: {
-              nome_usuario: nomeValidado.textoFiltrado,
-              // store normalized apelido to keep uniqueness checks consistent
-              apelido_usuario: apelidoNormalized,
-              email_usuario: emailTrimmed,
-              senha_usuario: hashedPassword,
-              fkIdTipoUsuario,
-              credibilidade_usuario,
-            },
-        include: { tipoUsuario: true },
+        data: {
+          id_usuario: randomUUID(),
+          nome_usuario: nomeValidado.textoFiltrado,
+          // store normalized apelido to keep uniqueness checks consistent
+          apelido_usuario: apelidoNormalized,
+          email_usuario: emailTrimmed,
+          senha_usuario: hashedPassword,
+          fkIdTipoUsuario: resolvedTipoId!,
+          credibilidade_usuario,
+        },
+        include: { tipousuario: true },
       });
 
       return user;

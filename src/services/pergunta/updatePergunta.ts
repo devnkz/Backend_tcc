@@ -39,7 +39,7 @@ class UpdatePerguntaService {
                 : findPergunta.fkId_curso,
             },
             include: {
-                usuario: {
+                usuarios: {
                     select: {
                         id_usuario: true,
                         nome_usuario: true,

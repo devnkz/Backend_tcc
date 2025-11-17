@@ -5,24 +5,24 @@ class ListGruposByIdService {
     const grupo = await prismaClient.grupo.findUnique({
       where: { id_grupo: grupoId },
       include: {
-        usuario: { 
-          select: { 
+        usuarios: {
+          select: {
             id_usuario: true,
             nome_usuario: true,
-            apelido_usuario: true
-          }
+            apelido_usuario: true,
+          },
         },
-        membros: {
-          include: { 
-            usuario: {
+        membro: {
+          include: {
+            usuarios: {
               select: {
                 id_usuario: true,
                 nome_usuario: true,
                 apelido_usuario: true,
-                foto_perfil: true
-              }
-            }
-          }
+                foto_perfil: true,
+              },
+            },
+          },
         },
       }
     });

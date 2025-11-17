@@ -66,7 +66,7 @@ class UpdateUserService {
                 ...(fkIdTipoUsuario ? { fkIdTipoUsuario } : {})
             },
             include: {
-                tipoUsuario: true
+                tipousuario: true
             }
         });
 

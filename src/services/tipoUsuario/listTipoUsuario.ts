@@ -2,9 +2,9 @@ import prismaClient from "../../prisma";
 
 class ListTipoUsuarioService {
     async execute() {
-        const TipoUsuarios = await prismaClient.tipoUsuario.findMany({
+        const TipoUsuarios = await prismaClient.tipousuario.findMany({
             include: {
-                users: {
+                usuarios: {
                     select: {
                         id_usuario: true,
                         nome_usuario: true,

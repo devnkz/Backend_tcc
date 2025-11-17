@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateCursoProps {
@@ -15,6 +16,7 @@ class createCursoService {
 
     const curso = await prismaClient.curso.create({
       data: {
+        id_curso: randomUUID(),
         nome_curso: nomeValidado.textoFiltrado,
       },
     });

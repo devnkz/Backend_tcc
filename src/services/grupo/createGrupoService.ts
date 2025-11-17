@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 class CreateGrupoService {
@@ -12,21 +13,23 @@ class CreateGrupoService {
 
     const grupo = await prismaClient.grupo.create({
       data: {
+        id_grupo: randomUUID(),
         nome_grupo: nomeValidado.textoFiltrado,
         fkId_usuario: createdById,
-        membros: {
+        membro: {
           create: allMembrosIds.map((userId) => ({ 
+            id_membro: randomUUID(),
             fkId_usuario: userId 
           })),
         },
       },
       include: {
-        membros: { 
-          include: { 
-            usuario: true 
-          } 
+        membro: {
+          include: {
+            usuarios: true,
+          },
         },
-        usuario: true,
+        usuarios: true,
       },
     });
 

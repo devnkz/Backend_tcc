@@ -12,13 +12,13 @@ class ListUserIdService {
         const users = await prismaClient.usuarios.findUnique({
           where: { id_usuario: id },
           include: {
-            tipoUsuario: {
+            tipousuario: {
               select: {
                 id_tipousuario: true,
                 nome_tipousuario: true,
               },
             },
-            Penalidades: {
+            penalidades: {
               select: {
                 id_penalidade: true,
                 dataInicio_penalidade: true,
@@ -26,7 +26,7 @@ class ListUserIdService {
                 perder_credibilidade: true,
                 descricao: true,
                 ativa: true,
-                denuncia: {
+                denuncias: {
                   select: {
                     id_denuncia: true,
                     tipo_conteudo: true,

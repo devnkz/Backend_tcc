@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -17,21 +18,22 @@ async function main() {
   } as any;
 
   for (const role of allowed) {
-    const found = await prisma.tipoUsuario.findFirst({
-      where: { nome_tipousuario: { equals: role, mode: "insensitive" } as any },
+    const titled = role.charAt(0).toUpperCase() + role.slice(1);
+    const found = await prisma.tipousuario.findFirst({
+      where: { nome_tipousuario: { in: [role, titled] } },
     });
     if (found) {
       ensure[role] = found.id_tipousuario;
     } else {
-      const created = await prisma.tipoUsuario.create({
-        data: { nome_tipousuario: title(role) },
+      const created = await prisma.tipousuario.create({
+        data: { id_tipousuario: randomUUID(), nome_tipousuario: title(role) },
       });
       ensure[role] = created.id_tipousuario;
     }
   }
 
   // Reassign users of non-allowed roles to a default/canonical role, then delete the extras
-  const allTipos = await prisma.tipoUsuario.findMany();
+  const allTipos = await prisma.tipousuario.findMany();
   const allowedIds = new Set(Object.values(ensure));
   const nonAllowed = allTipos.filter((t) => !allowedIds.has(t.id_tipousuario));
   if (nonAllowed.length > 0) {
@@ -50,7 +52,7 @@ async function main() {
     }
 
     for (const t of nonAllowed) {
-      await prisma.tipoUsuario.delete({ where: { id_tipousuario: t.id_tipousuario } });
+      await prisma.tipousuario.delete({ where: { id_tipousuario: t.id_tipousuario } });
     }
   }
 

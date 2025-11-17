@@ -4,25 +4,30 @@ class ListUserService {
     async execute() { 
         const users = await prismaClient.usuarios.findMany({
             include: {
-                tipoUsuario: {
-                    select: {
-                        id_tipousuario: true,
-                        nome_tipousuario: true,
+                    tipousuario: {
+                        select: {
+                            id_tipousuario: true,
+                            nome_tipousuario: true,
+                        },
+                    },
+                    penalidades: {
+                        select: {
+                            id_penalidade: true,
+                            dataInicio_penalidade: true,
+                            dataFim_penalidade: true,
+                            perder_credibilidade: true,
+                            descricao: true,
+                            ativa: true,
+                        },
                     },
                 },
-                Penalidades:{
-                    select: {
-                        id_penalidade: true,
-                        dataInicio_penalidade: true,
-                        dataFim_penalidade: true,
-                        perder_credibilidade: true,
-                        descricao: true,
-                        ativa: true,
-                    }
-                }
-            },
         })
-        return users;
+        // Map `tipousuario` to `tipoUsuario` to match frontend expectations
+        const normalized = users.map((u: any) => ({
+            ...u,
+            tipoUsuario: u.tipousuario ?? null,
+        }));
+        return normalized;
     }
 }
 

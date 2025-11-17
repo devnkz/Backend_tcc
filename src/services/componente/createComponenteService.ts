@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 interface CreateComponenteProps {
@@ -16,6 +17,7 @@ class CreateComponenteService {
 
     const componente = await prismaClient.componente.create({
       data: {
+        id_componente: randomUUID(),
         nome_componente: nomeValidado.textoFiltrado,
         fkId_curso,
       },

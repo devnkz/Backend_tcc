@@ -41,7 +41,8 @@ class CreateUserController {
       const status = error.status || 400;
       const message = error.message || "Erro interno ao criar usuário.";
 
-      return reply.status(status).send({ error: message });
+      // Return a consistent `message` field so clients can reliably read the error
+      return reply.status(status).send({ message });
     }
   }
 }

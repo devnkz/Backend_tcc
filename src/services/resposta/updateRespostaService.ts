@@ -24,9 +24,10 @@ class updateRespostaService {
         fkId_pergunta,
         fkId_usuario,
         resposta: respostaValidada.textoFiltrado,
+        dataAtualizacao_resposta: new Date(),
       },
       include: {
-        usuario: {
+        usuarios: {
           select: {
             id_usuario: true,
             nome_usuario: true,

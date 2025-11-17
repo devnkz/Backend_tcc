@@ -20,37 +20,42 @@ class UpdateDenunciaService {
             throw new Error("Denúncia não encontrada");
         }
 
-        // Verificar se o usuário existe
-        const userExists = await prismaClient.usuarios.findUnique({
-            where: { id_usuario: fkId_usuario }
-        });
+        // Determine which user id to use for the updated record.
+        // If the caller didn't provide `fkId_usuario` (e.g. archiving a denúncia)
+        // fall back to the existing value on the record.
+        const fkUserToUse = fkId_usuario ?? findDenuncia.fkId_usuario;
 
-        if (!userExists) {
-            throw new Error("Usuário não encontrado");
+        // If we have a user id, verify the user exists. If not found, throw.
+        if (fkUserToUse) {
+            const userExists = await prismaClient.usuarios.findUnique({
+                where: { id_usuario: fkUserToUse }
+            });
+            if (!userExists) {
+                throw new Error("Usuário não encontrado");
+            }
         }
 
         // Atualizar denúncia e retornar os dados modificados
         const updatedDenuncia = await prismaClient.denuncias.update({
             where: { id_denuncia: id },
             data: { 
-                fkId_usuario, 
+                fkId_usuario: fkUserToUse, 
                 fkId_conteudo_denunciado, 
                 nivel_denuncia, 
                 status,
                 resultado 
             },
             include: {
-                usuario: {
+                usuarios: {
                     select: {
                         id_usuario: true,
                         nome_usuario: true,
                         apelido_usuario: true,
                     }
                 },
-                penalidade: {
+                penalidades: {
                     select: {
                         id_penalidade: true,
-                        banimento: true,
                         perder_credibilidade: true,
                         descricao: true,
                         ativa: true,

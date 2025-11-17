@@ -1,5 +1,6 @@
 import prismaClient from "../../prisma";
 import { validarTextoOuErro } from "../../utils/filterText";
+import { randomUUID } from "crypto";
 
 interface CreatePerguntaProps {
   fkId_usuario: string;
@@ -48,13 +49,14 @@ class CreatePerguntaService {
 
     const perguntaCriada = await prismaClient.pergunta.create({
       data: {
+        id_pergunta: randomUUID(),
         fkId_usuario,
         pergunta: perguntaValidada.textoFiltrado,
         fkId_componente,
-        fkId_curso
+        fkId_curso,
       },
       include: {
-        usuario: {
+        usuarios: {
           select: {
             id_usuario: true,
             nome_usuario: true,

@@ -20,7 +20,7 @@ class UpdatePenalidadeController {
             fkId_usuario, 
             fkId_denuncia, 
             banimento, 
-            perder_credibilidade, 
+            perder_credibilidade: Number(perder_credibilidade),
             descricao,
             ativa 
         });

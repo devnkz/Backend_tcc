@@ -1,4 +1,5 @@
 import prismaClient from "../../prisma";
+import { randomUUID } from "crypto";
 import { validarTextoOuErro } from "../../utils/filterText";
 
 interface UpdateGrupoProps {
@@ -35,21 +36,22 @@ class updateGrupoService {
       data: {
         // aplica nome filtrado somente se enviado
         nome_grupo: nomeFiltrado,
-        membros: novosMembrosIds
+        membro: novosMembrosIds
           ? {
               create: novosMembrosIds.map((userId) => ({ 
+                id_membro: randomUUID(),
                 fkId_usuario: userId 
               })),
             }
           : undefined,
       },
       include: {
-        membros: { 
-          include: { 
-            usuario: true 
-          } 
+        membro: {
+          include: {
+            usuarios: true,
+          },
         },
-        usuario: true,
+        usuarios: true,
       },
     });
 

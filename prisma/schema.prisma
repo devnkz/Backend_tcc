@@ -7,153 +7,171 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuarios {
-  id_usuario            String  @id @default(uuid())
-  nome_usuario          String
-  apelido_usuario       String   @unique
-  foto_perfil           String?
-  email_usuario         String  @unique
-  senha_usuario         String
-  credibilidade_usuario Int
+model componente {
+  id_componente   String     @id
+  nome_componente String
+  fkId_curso      String
+  curso           curso      @relation(fields: [fkId_curso], references: [id_curso], map: "Componente_fkId_curso_fkey")
+  pergunta        pergunta[]
 
-  fkIdTipoUsuario String
-  tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario])
-
-  dataCriacao_usuario DateTime      @default(now())
-  pergunta            Pergunta[]
-  respostas           Resposta[]
-  grupos              Membro[]
-  gruposCriados       Grupo[]       @relation("GrupoCriador")
-  Curso               Curso?        @relation(fields: [cursoId_curso], references: [id_curso])
-  cursoId_curso       String?
-  Mensagem            Mensagem[]
-  Denuncias           Denuncias[]
-  Penalidades         Penalidades[]
-  Notificacoes        Notificacoes[]
+  @@index([fkId_curso], map: "Componente_fkId_curso_fkey")
 }
 
-model TipoUsuario {
-  id_tipousuario   String     @id @default(uuid())
-  nome_tipousuario String
-  users            Usuarios[]
+model curso {
+  id_curso   String       @id
+  nome_curso String
+  componente componente[]
+  pergunta   pergunta[]
+  usuarios   usuarios[]
 }
 
-model Curso {
-  id_curso    String       @id @default(uuid())
-  nome_curso  String
-  componentes Componente[]
-  Usuarios    Usuarios[]
-  Pergunta    Pergunta[]
+model denuncias {
+  id_denuncia              String       @id
+  fkId_usuario             String
+  fkId_conteudo_denunciado String
+  descricao                String
+  nivel_denuncia           Int
+  status                   String       @default("pendente")
+  resultado                String
+  tipo_denuncia            String?
+  dataCriacao_denuncia     DateTime     @default(now())
+  tipo_conteudo            String
+  fkId_usuario_conteudo    String
+  usuarios                 usuarios     @relation(fields: [fkId_usuario], references: [id_usuario], map: "Denuncias_fkId_usuario_fkey")
+  penalidades              penalidades?
+
+  @@index([fkId_usuario], map: "Denuncias_fkId_usuario_fkey")
 }
 
-model Pergunta {
-  id_pergunta             String     @id @default(uuid())
-  pergunta                String
-  fkId_usuario            String
-  usuario                 Usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
-  fkId_componente         String
-  componente              Componente @relation(fields: [fkId_componente], references: [id_componente])
-  dataCriacao_pergunta    DateTime   @default(now())
-  dataAtualizacao_pergunta DateTime? @updatedAt
-  fkId_curso              String
-  curso                   Curso      @relation(fields: [fkId_curso], references: [id_curso])
-  respostas               Resposta[]
-}
-
-model Resposta {
-  id_resposta             String   @id @default(uuid())
-  resposta                String
-  fkId_usuario            String
-  fkId_pergunta           String
-  usuario                 Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-  pergunta                Pergunta @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade)
-  dataCriacao_resposta    DateTime @default(now())
-  dataAtualizacao_resposta DateTime? @updatedAt
-}
-
-model Grupo {
-  id_grupo     String     @id @default(uuid())
+model grupo {
+  id_grupo     String     @id
   nome_grupo   String
   fkId_usuario String
-  usuario      Usuarios   @relation("GrupoCriador", fields: [fkId_usuario], references: [id_usuario])
-  membros      Membro[]
-  mensagens    Mensagem[]
+  usuarios     usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Grupo_fkId_usuario_fkey")
+  membro       membro[]
+  mensagem     mensagem[]
+
+  @@index([fkId_usuario], map: "Grupo_fkId_usuario_fkey")
 }
 
-model Membro {
-  id_membro    String   @id @default(uuid())
+model membro {
+  id_membro    String   @id
   fkId_usuario String
   fkId_grupo   String
-  usuario      Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-  grupo        Grupo    @relation(fields: [fkId_grupo], references: [id_grupo])
+  grupo        grupo    @relation(fields: [fkId_grupo], references: [id_grupo], map: "Membro_fkId_grupo_fkey")
+  usuarios     usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Membro_fkId_usuario_fkey")
 
-  @@unique([fkId_usuario, fkId_grupo])
+  @@unique([fkId_usuario, fkId_grupo], map: "Membro_fkId_usuario_fkId_grupo_key")
+  @@index([fkId_grupo], map: "Membro_fkId_grupo_fkey")
 }
 
-model Mensagem {
-  id_mensagem          String   @id @default(uuid())
+model mensagem {
+  id_mensagem          String     @id
   mensagem             String
   fkId_usuario         String
   fkId_grupo           String
-  dataCriacao_Mensagem DateTime @default(now())
+  dataCriacao_Mensagem DateTime   @default(now())
+  replyToId            String?
+  grupo                grupo      @relation(fields: [fkId_grupo], references: [id_grupo], map: "Mensagem_fkId_grupo_fkey")
+  usuarios             usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Mensagem_fkId_usuario_fkey")
+  replyTo              mensagem?  @relation("mensagemTomensagem", fields: [replyToId], references: [id_mensagem], map: "Mensagem_replyToId_fkey")
+  replies              mensagem[] @relation("mensagemTomensagem")
 
-  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-  grupo   Grupo    @relation(fields: [fkId_grupo], references: [id_grupo])
-
-  // Relação opcional para respostas (reply)
-  replyToId String?    @db.VarChar(191)
-  replyTo   Mensagem?  @relation("MensagemReply", fields: [replyToId], references: [id_mensagem])
-  replies   Mensagem[] @relation("MensagemReply")
+  @@index([fkId_grupo], map: "Mensagem_fkId_grupo_fkey")
+  @@index([fkId_usuario], map: "Mensagem_fkId_usuario_fkey")
+  @@index([replyToId], map: "Mensagem_replyToId_fkey")
 }
 
-model Componente {
-  id_componente   String     @id @default(uuid())
-  nome_componente String
-  fkId_curso      String
-  curso           Curso      @relation(fields: [fkId_curso], references: [id_curso])
-  perguntas       Pergunta[]
-}
-
-model Denuncias {
-  id_denuncia              String   @id @default(uuid())
-  fkId_usuario             String
-  fkId_conteudo_denunciado String
-  fkId_usuario_conteudo    String
-  descricao                String
-  tipo_conteudo            String
-  nivel_denuncia           Int
-  status                   String   @default("pendente")
-  resultado                String
-  dataCriacao_denuncia     DateTime @default(now())
-
-  usuario    Usuarios     @relation(fields: [fkId_usuario], references: [id_usuario])
-  penalidade Penalidades? @relation("DenunciasToPenalidades")
-}
-
-model Penalidades {
-  id_penalidade          String   @id @default(uuid())
-  fkId_usuario           String
-  fkId_denuncia          String   @unique
-  dataInicio_penalidade  DateTime
-  dataFim_penalidade     DateTime
-  perder_credibilidade   Int
-  descricao              String
-  ativa                  Boolean  @default(true)
-  dataCriacao_penalidade DateTime @default(now())
-
-  usuario  Usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
-  denuncia Denuncias @relation("DenunciasToPenalidades", fields: [fkId_denuncia], references: [id_denuncia])
-}
-
-model Notificacoes {
-  id_notificacao          String   @id @default(uuid())
+model notificacoes {
+  id_notificacao          String   @id
   fkId_usuario            String
   titulo                  String
   mensagem                String
-  tipo                    String
   lida                    Boolean  @default(false)
+  tipo                    String
+  fkId_denuncia           String?
   dataCriacao_notificacao DateTime @default(now())
+  usuarios                usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Notificacoes_fkId_usuario_fkey")
+  @@index([fkId_usuario], map: "Notificacoes_fkId_usuario_idx")
+  @@index([fkId_denuncia], map: "Notificacoes_fkId_denuncia_idx")
+}
 
-  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-  @@index([fkId_usuario])
+model penalidades {
+  id_penalidade          String    @id
+  fkId_usuario           String
+  fkId_denuncia          String    @unique(map: "Penalidades_fkId_denuncia_key")
+  perder_credibilidade   Int
+  descricao              String
+  ativa                  Boolean   @default(true)
+  dataCriacao_penalidade DateTime  @default(now())
+  dataFim_penalidade     DateTime
+  dataInicio_penalidade  DateTime
+  denuncias              denuncias @relation(fields: [fkId_denuncia], references: [id_denuncia], map: "Penalidades_fkId_denuncia_fkey")
+  usuarios               usuarios  @relation(fields: [fkId_usuario], references: [id_usuario], map: "Penalidades_fkId_usuario_fkey")
+
+  @@index([fkId_usuario], map: "Penalidades_fkId_usuario_fkey")
+}
+
+model pergunta {
+  id_pergunta              String     @id
+  pergunta                 String
+  fkId_usuario             String
+  fkId_componente          String
+  dataCriacao_pergunta     DateTime   @default(now())
+  fkId_curso               String
+  dataAtualizacao_pergunta DateTime?
+  componente               componente @relation(fields: [fkId_componente], references: [id_componente], map: "Pergunta_fkId_componente_fkey")
+  curso                    curso      @relation(fields: [fkId_curso], references: [id_curso], map: "Pergunta_fkId_curso_fkey")
+  usuarios                 usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Pergunta_fkId_usuario_fkey")
+  resposta                 resposta[]
+
+  @@index([fkId_componente], map: "Pergunta_fkId_componente_fkey")
+  @@index([fkId_curso], map: "Pergunta_fkId_curso_fkey")
+  @@index([fkId_usuario], map: "Pergunta_fkId_usuario_fkey")
+}
+
+model resposta {
+  id_resposta              String    @id
+  resposta                 String
+  fkId_usuario             String
+  fkId_pergunta            String
+  dataCriacao_resposta     DateTime  @default(now())
+  dataAtualizacao_resposta DateTime?
+  pergunta                 pergunta  @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade, map: "Resposta_fkId_pergunta_fkey")
+  usuarios                 usuarios  @relation(fields: [fkId_usuario], references: [id_usuario], map: "Resposta_fkId_usuario_fkey")
+
+  @@index([fkId_pergunta], map: "Resposta_fkId_pergunta_fkey")
+  @@index([fkId_usuario], map: "Resposta_fkId_usuario_fkey")
+}
+
+model tipousuario {
+  id_tipousuario   String     @id
+  nome_tipousuario String
+  usuarios         usuarios[]
+}
+
+model usuarios {
+  id_usuario            String         @id
+  nome_usuario          String
+  apelido_usuario       String
+  foto_perfil           String?
+  email_usuario         String         @unique(map: "Usuarios_email_usuario_key")
+  senha_usuario         String
+  fkIdTipoUsuario       String
+  dataCriacao_usuario   DateTime       @default(now())
+  cursoId_curso         String?
+  credibilidade_usuario Int
+  denuncias             denuncias[]
+  grupo                 grupo[]
+  membro                membro[]
+  mensagem              mensagem[]
+  notificacoes          notificacoes[]
+  penalidades           penalidades[]
+  pergunta              pergunta[]
+  resposta              resposta[]
+  curso                 curso?         @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
+  tipousuario           tipousuario    @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
+
+  @@index([cursoId_curso], map: "Usuarios_cursoId_curso_fkey")
+  @@index([fkIdTipoUsuario], map: "Usuarios_fkIdTipoUsuario_fkey")
 }

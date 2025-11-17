@@ -1,14 +1,14 @@
-import prismaClient from './src/prisma/index';
+import prismaClient from '../src/prisma/index';
 
 async function checkTipos() {
   try {
-    const tipos = await prismaClient.tipoUsuario.findMany({
+    const tipos = await prismaClient.tipousuario.findMany({
       select: {
         id_tipousuario: true,
         nome_tipousuario: true,
         _count: {
           select: {
-            users: true
+            usuarios: true
           }
         }
       }
@@ -16,7 +16,7 @@ async function checkTipos() {
     
     console.log('\n=== TIPOS DE USUÁRIO NO BANCO ===');
     tipos.forEach(t => {
-      console.log(`- ${t.nome_tipousuario} (ID: ${t.id_tipousuario}) - ${t._count.users} usuários`);
+      console.log(`- ${t.nome_tipousuario} (ID: ${t.id_tipousuario}) - ${t._count.usuarios} usuários`);
     });
     console.log('=================================\n');
     

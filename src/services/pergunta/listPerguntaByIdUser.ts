@@ -8,11 +8,11 @@ class ListPerguntaByIdUserService {
       },
       orderBy: { dataCriacao_pergunta: "desc" },
       include: {
-        usuario: {
+        usuarios: {
           select: {
-            id_usuario: true,  
-            nome_usuario: true, 
-            apelido_usuario: true 
+            id_usuario: true,
+            nome_usuario: true,
+            apelido_usuario: true,
           },
         },
         componente: {

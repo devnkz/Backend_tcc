@@ -71,6 +71,7 @@ import { UpdateDenunciaController } from './controllers/denuncias/updateDenuncia
 import { ListDenunciaController } from './controllers/denuncias/listDenunciaController';
 import { DeleteDenunciaController } from './controllers/denuncias/deleteDenunciaController';
 import { CheckDenunciaController } from './controllers/denuncias/checkDenunciaController';
+import { GetDenunciaByIdController } from './controllers/denuncias/getDenunciaByIdController';
 
 //imports penalidades
 
@@ -84,6 +85,7 @@ import { DeletePenalidadeController } from './controllers/penalidades/deletePena
 import { CreateNotificacaoController } from './controllers/notificacoes/createNotificacaoController';
 import { ListNotificacaoByUserController } from './controllers/notificacoes/listNotificacaoByUserController';
 import { DeleteNotificacaoController } from './controllers/notificacoes/deleteNotificacaoController';
+import { UpdateNotificacaoController } from './controllers/notificacoes/updateNotificacaoController';
 
 interface RequestParams {
   id: string;
@@ -280,6 +282,10 @@ export async function routes(
         return new ListDenunciaController().handle(request, reply)
     })
 
+    fastify.get("/denuncia/:id", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new GetDenunciaByIdController().handle(request, reply)
+    })
+
     fastify.get("/denuncia/check", async (request: FastifyRequest, reply: FastifyReply) => {
         return new CheckDenunciaController().handle(request, reply)
     })
@@ -300,6 +306,10 @@ export async function routes(
 
     fastify.get("/notificacao/user/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new ListNotificacaoByUserController().handle(request, reply);
+    })
+
+    fastify.put("/notificacao/:id_notificacao", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new UpdateNotificacaoController().handle(request, reply);
     })
 
     fastify.delete("/notificacao/:id_notificacao", async (request: FastifyRequest, reply: FastifyReply) => {

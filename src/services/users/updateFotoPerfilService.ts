@@ -13,7 +13,7 @@ export class UpdateFotoPerfilService {
         foto_perfil: foto_perfil,
       },
       include: {
-        tipoUsuario: true
+        tipousuario: true
       }
     });
 

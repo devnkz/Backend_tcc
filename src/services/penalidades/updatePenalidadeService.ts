@@ -50,14 +50,14 @@ class UpdatePenalidadeService {
                 ativa 
             },
             include: {
-                usuario: {
+                usuarios: {
                     select: {
                         id_usuario: true,
                         nome_usuario: true,
                         apelido_usuario: true,
                     }
                 },
-                denuncia: {
+                denuncias: {
                     select: {
                         id_denuncia: true,
                         nivel_denuncia: true,

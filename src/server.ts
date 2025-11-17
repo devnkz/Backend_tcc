@@ -6,6 +6,16 @@ import path from "path"
 import { routes } from "./routes"
 import { Server as SocketIOServer } from "socket.io"
 import prismaClient from "./prisma"
+import { Prisma } from '@prisma/client'
+import { randomUUID } from 'crypto'
+
+// Global error handlers to surface uncaught exceptions and unhandled rejections
+process.on('uncaughtException', (err) => {
+  console.error('UNCAUGHT EXCEPTION', err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.error('UNHANDLED REJECTION', reason);
+});
 
 const app = fastify({ logger: true })
 
@@ -23,6 +33,36 @@ const start = async () => {
 
   await app.register(multipart)
   await app.register(routes)
+
+  // Global Fastify error handler: normalize Prisma errors and service errors
+  app.setErrorHandler((error, request, reply) => {
+    try {
+      // Prisma known request errors (ex: connectivity, record not found)
+      if ((error as any)?.constructor?.name === 'PrismaClientKnownRequestError') {
+      const code = (error as any).code;
+      request.log.error({ code, error }, 'PrismaClientKnownRequestError');
+        if (code === 'P1001') {
+          return reply.status(503).send({ message: 'Serviço temporariamente indisponível (banco de dados).' });
+        }
+        if (code === 'P2025') {
+          return reply.status(404).send({ message: 'Recurso não encontrado.' });
+        }
+        if (code === 'P2002') {
+          return reply.status(409).send({ message: 'Conflito de dados (valor duplicado).' });
+        }
+      }
+
+      // If services throw an error with statusCode/status, use it
+      const status = (error as any).statusCode || (error as any).status || 500;
+      const message = (error as any).message || 'Erro interno do servidor';
+      request.log.error(error);
+      reply.status(status).send({ message });
+    } catch (e) {
+      // Fallback
+      request.log.error(e, 'Error handler failure');
+      reply.status(500).send({ message: 'Erro interno do servidor' });
+    }
+  })
 
   // ⚡️ Inicializar Socket.IO após o Fastify estar pronto
   const io = new SocketIOServer(app.server, {
@@ -84,6 +124,7 @@ const start = async () => {
         }
         const msgSalva = await prismaClient.mensagem.create({
           data: {
+            id_mensagem: randomUUID(),
             mensagem: text,
             fkId_usuario: userId,
             fkId_grupo: grupoId,
@@ -121,6 +162,29 @@ const start = async () => {
         broadcastOnlineUsers();
       }
     });
+  });
+
+  // Global Fastify error handler: map known Prisma errors and pass friendly responses
+  app.setErrorHandler((error, request, reply) => {
+    // Prisma known errors expose a `code` property
+    const maybeCode = (error as any)?.code;
+    if (maybeCode) {
+      // Can't reach DB
+        if (maybeCode === 'P1001') {
+        request.log.error(error, 'Prisma P1001 - database unreachable');
+        return reply.status(503).send({ message: 'Serviço temporariamente indisponível (banco de dados).' });
+      }
+      // Record not found for an operation
+      if (maybeCode === 'P2025') {
+        return reply.status(404).send({ message: 'Recurso não encontrado.' });
+      }
+    }
+
+    // If service threw a custom statusCode, use it
+    const status = (error as any)?.statusCode || (error as any)?.status || 500;
+    const message = (error as any)?.message || 'Erro interno do servidor';
+    request.log.error(error);
+    reply.status(status).send({ message });
   });
 
 

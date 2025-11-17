@@ -5,7 +5,7 @@ class listRespostaService {
     const respostas = await prismaClient.resposta.findMany({
       orderBy: { dataCriacao_resposta: "desc" },
       include: {
-        usuario: {
+        usuarios: {
           select: {
             id_usuario: true,
             nome_usuario: true,
@@ -16,7 +16,7 @@ class listRespostaService {
           select: {
             id_pergunta: true,
             pergunta: true,
-            usuario: {
+            usuarios: {
               select: {
                 id_usuario: true,
                 nome_usuario: true,

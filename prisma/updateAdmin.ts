@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Buscar o tipo admin
-  const adminTipo = await prisma.tipoUsuario.findFirst({
+  const adminTipo = await prisma.tipousuario.findFirst({
     where: { 
       nome_tipousuario: { 
         in: ["admin", "Admin", "ADMIN", "administrador", "Administrador"] 
@@ -20,7 +20,7 @@ async function main() {
   // Buscar o usuário pelo email
   const usuario = await prisma.usuarios.findUnique({
     where: { email_usuario: "lilvhx@gmail.com" },
-    include: { tipoUsuario: true },
+    include: { tipousuario: true },
   });
 
   if (!usuario) {
@@ -31,18 +31,18 @@ async function main() {
   console.log("📋 Usuário encontrado:", {
     nome: usuario.nome_usuario,
     apelido: usuario.apelido_usuario,
-    tipo_atual: usuario.tipoUsuario.nome_tipousuario,
+    tipo_atual: usuario.tipousuario.nome_tipousuario,
   });
 
   // Atualizar para admin
   const atualizado = await prisma.usuarios.update({
     where: { id_usuario: usuario.id_usuario },
     data: { fkIdTipoUsuario: adminTipo.id_tipousuario },
-    include: { tipoUsuario: true },
+    include: { tipousuario: true },
   });
 
   console.log("✅ Usuário atualizado com sucesso!");
-  console.log("📋 Novo tipo:", atualizado.tipoUsuario.nome_tipousuario);
+  console.log("📋 Novo tipo:", atualizado.tipousuario.nome_tipousuario);
 }
 
 main()

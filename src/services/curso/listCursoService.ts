@@ -4,11 +4,11 @@ class listCursoService {
   async execute() {
     const cursos = await prismaClient.curso.findMany({
       include: {
-        componentes: {
+        componente: {
           select: {
             id_componente: true,
-            nome_componente: true,
-          },
+            nome_componente: true
+          }
         },
       },
     });
