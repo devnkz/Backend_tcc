@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import prismaClient from "../../prisma";
+import { enviarCodigo } from "../../utils/mailer";
 
 interface LoginUserProps {
   email_usuario: string;
@@ -19,6 +20,8 @@ class LoginUserService {
       }
     });
 
+    console.log(findUser?.email_usuario);
+
     if (!findUser) {
       throw new Error("Usuário não encontrado");
     }
@@ -30,6 +33,7 @@ class LoginUserService {
       throw new Error("Senha incorreta");
     }
 
+<<<<<<< HEAD
     // Gerar o token JWT
     const token = jwt.sign(
       {
@@ -42,8 +46,22 @@ class LoginUserService {
       process.env.JWT_SECRET || "meuSegredo123@!",
       { expiresIn: "48h" }
     );
+=======
+    const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
+>>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
 
-    return { user: findUser, token };
+    await prismaClient.codigoVerificacaoEmail.create({
+      data: {
+        codigo: generatedCode,
+        email_usuario: email_usuario,
+        dataCriacao_codigo: new Date(),
+        dataExpiracao_codigo: new Date(Date.now() + 5 * 60 * 1000),
+      },
+    });
+
+    await enviarCodigo(email_usuario, generatedCode);
+
+    return { user: findUser };
   }
 }
 

@@ -5,6 +5,10 @@ import { upload } from './config/multer';
 // Import da autenticação
 import { authenticate } from './middleware/auth';
 
+//imports Verificar Codigo Email
+
+import { VerifyCodeController } from './controllers/VerificarCodigoEmail';
+
 //imports Usuarios
 
 import { CreateUserController } from './controllers/users/createUserController';
@@ -103,6 +107,11 @@ export async function routes(
 
     fastify.post("/verifyToken", async (request: FastifyRequest, reply: FastifyReply) => {
         return verifyToken(request, reply);
+    });
+
+    //Rota de Verificar Codigo Email
+    fastify.post("/verify-code", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new VerifyCodeController().handle(request, reply)
     });
 
     //Rotas de Usuario
