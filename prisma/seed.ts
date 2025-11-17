@@ -18,14 +18,9 @@ async function main() {
   } as any;
 
   for (const role of allowed) {
-<<<<<<< HEAD
     const titled = role.charAt(0).toUpperCase() + role.slice(1);
     const found = await prisma.tipousuario.findFirst({
       where: { nome_tipousuario: { in: [role, titled] } },
-=======
-    const found = await prisma.tipoUsuario.findFirst({
-      where: { nome_tipousuario: role }, // MySQL já é case-insensitive
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
     });
 
     if (found) {
@@ -38,13 +33,8 @@ async function main() {
     }
   }
 
-<<<<<<< HEAD
   // Reassign users of non-allowed roles to a default/canonical role, then delete the extras
   const allTipos = await prisma.tipousuario.findMany();
-=======
-  // Reassign users of non-allowed roles to a default/canonical role, then delete extras
-  const allTipos = await prisma.tipoUsuario.findMany();
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
   const allowedIds = new Set(Object.values(ensure));
   const nonAllowed = allTipos.filter((t) => !allowedIds.has(t.id_tipousuario));
 

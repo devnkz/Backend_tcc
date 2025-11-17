@@ -33,22 +33,7 @@ class LoginUserService {
       throw new Error("Senha incorreta");
     }
 
-<<<<<<< HEAD
-    // Gerar o token JWT
-    const token = jwt.sign(
-      {
-        id: findUser.id_usuario,
-        nome_usuario: findUser.nome_usuario,
-        apelido_usuario: findUser.apelido_usuario,
-        email_usuario: findUser.email_usuario,
-        tipo_usuario: findUser.tipousuario?.nome_tipousuario
-      },
-      process.env.JWT_SECRET || "meuSegredo123@!",
-      { expiresIn: "48h" }
-    );
-=======
     const generatedCode = Math.floor(100000 + Math.random() * 900000).toString();
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
 
     await prismaClient.codigoVerificacaoEmail.create({
       data: {

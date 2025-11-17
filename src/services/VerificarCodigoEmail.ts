@@ -36,7 +36,7 @@ class VerifyCodeService {
     const user = await prismaClient.usuarios.findFirst({
       where: { email_usuario: record.email_usuario },
       include: {
-        tipoUsuario: true,
+        tipousuario: true,
       },
     });
 
@@ -56,7 +56,7 @@ class VerifyCodeService {
         nome_usuario: user.nome_usuario,
         apelido_usuario: user.apelido_usuario,
         email_usuario: user.email_usuario,
-        tipo_usuario: user.tipoUsuario.nome_tipousuario,
+        tipo_usuario: user.tipousuario.nome_tipousuario,
       },
       process.env.JWT_SECRET || "meuSegredo123@!",
       { expiresIn: "48h" }

@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-<<<<<<< HEAD
 model componente {
   id_componente   String     @id
   nome_componente String
@@ -16,32 +15,6 @@ model componente {
   pergunta        pergunta[]
 
   @@index([fkId_curso], map: "Componente_fkId_curso_fkey")
-=======
-model Usuarios {
-  id_usuario            String  @id @default(uuid())
-  nome_usuario          String
-  apelido_usuario       String  @unique
-  foto_perfil           String?
-  email_usuario         String  @unique
-  senha_usuario         String
-  credibilidade_usuario Int
-
-  fkIdTipoUsuario String
-  tipoUsuario     TipoUsuario @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario])
-
-  dataCriacao_usuario     DateTime                 @default(now())
-  pergunta                Pergunta[]
-  respostas               Resposta[]
-  grupos                  Membro[]
-  gruposCriados           Grupo[]                  @relation("GrupoCriador")
-  Curso                   Curso?                   @relation(fields: [cursoId_curso], references: [id_curso])
-  cursoId_curso           String?
-  Mensagem                Mensagem[]
-  Denuncias               Denuncias[]
-  Penalidades             Penalidades[]
-  Notificacoes            Notificacoes[]
-  codigoVerificacaoEmails CodigoVerificacaoEmail[]
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
 }
 
 model curso {
@@ -70,38 +43,8 @@ model denuncias {
   @@index([fkId_usuario], map: "Denuncias_fkId_usuario_fkey")
 }
 
-<<<<<<< HEAD
 model grupo {
   id_grupo     String     @id
-=======
-model Pergunta {
-  id_pergunta              String     @id @default(uuid())
-  pergunta                 String
-  fkId_usuario             String
-  usuario                  Usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
-  fkId_componente          String
-  componente               Componente @relation(fields: [fkId_componente], references: [id_componente])
-  dataCriacao_pergunta     DateTime   @default(now())
-  dataAtualizacao_pergunta DateTime?  @updatedAt
-  fkId_curso               String
-  curso                    Curso      @relation(fields: [fkId_curso], references: [id_curso])
-  respostas                Resposta[]
-}
-
-model Resposta {
-  id_resposta              String    @id @default(uuid())
-  resposta                 String
-  fkId_usuario             String
-  fkId_pergunta            String
-  usuario                  Usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
-  pergunta                 Pergunta  @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade)
-  dataCriacao_resposta     DateTime  @default(now())
-  dataAtualizacao_resposta DateTime? @updatedAt
-}
-
-model Grupo {
-  id_grupo     String     @id @default(uuid())
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
   nome_grupo   String
   fkId_usuario String
   usuarios     usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Grupo_fkId_usuario_fkey")
@@ -148,7 +91,6 @@ model notificacoes {
   tipo                    String
   fkId_denuncia           String?
   dataCriacao_notificacao DateTime @default(now())
-<<<<<<< HEAD
   usuarios                usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Notificacoes_fkId_usuario_fkey")
   @@index([fkId_usuario], map: "Notificacoes_fkId_usuario_idx")
   @@index([fkId_denuncia], map: "Notificacoes_fkId_denuncia_idx")
@@ -227,17 +169,12 @@ model usuarios {
   penalidades           penalidades[]
   pergunta              pergunta[]
   resposta              resposta[]
+  codigoVerificacaoEmails CodigoVerificacaoEmail[]
   curso                 curso?         @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
   tipousuario           tipousuario    @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
 
   @@index([cursoId_curso], map: "Usuarios_cursoId_curso_fkey")
   @@index([fkIdTipoUsuario], map: "Usuarios_fkIdTipoUsuario_fkey")
-=======
-
-  usuario Usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
-
-  @@index([fkId_usuario])
->>>>>>> bfc6349e475dc2fec3a5a08c1559e44e79e62429
 }
 
 model CodigoVerificacaoEmail {
@@ -246,6 +183,5 @@ model CodigoVerificacaoEmail {
   codigo                    String
   dataCriacao_codigo        DateTime @default(now())
   dataExpiracao_codigo      DateTime
-
-  usuario Usuarios @relation(fields: [email_usuario], references: [email_usuario])
+  usuario usuarios @relation(fields: [email_usuario], references: [email_usuario])
 }
