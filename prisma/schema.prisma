@@ -92,6 +92,7 @@ model notificacoes {
   fkId_denuncia           String?
   dataCriacao_notificacao DateTime @default(now())
   usuarios                usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Notificacoes_fkId_usuario_fkey")
+
   @@index([fkId_usuario], map: "Notificacoes_fkId_usuario_idx")
   @@index([fkId_denuncia], map: "Notificacoes_fkId_denuncia_idx")
 }
@@ -151,27 +152,27 @@ model tipousuario {
 }
 
 model usuarios {
-  id_usuario            String         @id
-  nome_usuario          String
-  apelido_usuario       String
-  foto_perfil           String?
-  email_usuario         String         @unique(map: "Usuarios_email_usuario_key")
-  senha_usuario         String
-  fkIdTipoUsuario       String
-  dataCriacao_usuario   DateTime       @default(now())
-  cursoId_curso         String?
-  credibilidade_usuario Int
-  denuncias             denuncias[]
-  grupo                 grupo[]
-  membro                membro[]
-  mensagem              mensagem[]
-  notificacoes          notificacoes[]
-  penalidades           penalidades[]
-  pergunta              pergunta[]
-  resposta              resposta[]
+  id_usuario              String                   @id
+  nome_usuario            String
+  apelido_usuario         String
+  foto_perfil             String?
+  email_usuario           String                   @unique(map: "Usuarios_email_usuario_key")
+  senha_usuario           String
+  fkIdTipoUsuario         String
+  dataCriacao_usuario     DateTime                 @default(now())
+  cursoId_curso           String?
+  credibilidade_usuario   Int
+  denuncias               denuncias[]
+  grupo                   grupo[]
+  membro                  membro[]
+  mensagem                mensagem[]
+  notificacoes            notificacoes[]
+  penalidades             penalidades[]
+  pergunta                pergunta[]
+  resposta                resposta[]
   codigoVerificacaoEmails CodigoVerificacaoEmail[]
-  curso                 curso?         @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
-  tipousuario           tipousuario    @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
+  curso                   curso?                   @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
+  tipousuario             tipousuario              @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
 
   @@index([cursoId_curso], map: "Usuarios_cursoId_curso_fkey")
   @@index([fkIdTipoUsuario], map: "Usuarios_fkIdTipoUsuario_fkey")
@@ -183,5 +184,5 @@ model CodigoVerificacaoEmail {
   codigo                    String
   dataCriacao_codigo        DateTime @default(now())
   dataExpiracao_codigo      DateTime
-  usuario usuarios @relation(fields: [email_usuario], references: [email_usuario])
+  usuario                   usuarios @relation(fields: [email_usuario], references: [email_usuario])
 }

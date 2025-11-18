@@ -41,6 +41,7 @@ class CreatePenalidadeService {
 
     // 🔥 ID do usuário que realizou a denúncia
     const autorDenuncia = denunciaExists.fkId_usuario;
+    const denunciado = denunciaExists.fkId_usuario_conteudo;
 
     // try to resolve the denunciado name and the content text so the notification
     // includes human-readable data even if the frontend didn't pass it
@@ -123,6 +124,20 @@ class CreatePenalidadeService {
         }
       })
     ]);
+
+    console.log(denunciado)
+
+    prismaClient.notificacoes.create({
+      data: {
+        id_notificacao: randomUUID(),
+        fkId_usuario: denunciado,
+        titulo: "Você recebeu uma penalidade",
+        mensagem: `Você recebeu uma penalidade devido à denúncia ${fkId_denuncia}. ${descricao}`,
+        tipo: "penalidade",
+        lida: false,
+        fkId_denuncia,
+    }
+});
 
     return penalidade;
   }

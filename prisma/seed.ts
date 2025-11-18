@@ -36,7 +36,7 @@ async function main() {
   // Reassign users of non-allowed roles to a default/canonical role, then delete the extras
   const allTipos = await prisma.tipousuario.findMany();
   const allowedIds = new Set(Object.values(ensure));
-  const nonAllowed = allTipos.filter((t) => !allowedIds.has(t.id_tipousuario));
+  const nonAllowed = allTipos.filter((t: any) => !allowedIds.has(t.id_tipousuario));
 
   if (nonAllowed.length > 0) {
     const defaultId = ensure["aluno"]; // fallback
