@@ -173,6 +173,7 @@ model usuarios {
   codigoVerificacaoEmails CodigoVerificacaoEmail[]
   curso                   curso?                   @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
   tipousuario             tipousuario              @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
+  progressoConquistas     ProgressoConquista[]
 
   @@index([cursoId_curso], map: "Usuarios_cursoId_curso_fkey")
   @@index([fkIdTipoUsuario], map: "Usuarios_fkIdTipoUsuario_fkey")
@@ -185,4 +186,24 @@ model CodigoVerificacaoEmail {
   dataCriacao_codigo        DateTime @default(now())
   dataExpiracao_codigo      DateTime
   usuario                   usuarios @relation(fields: [email_usuario], references: [email_usuario])
+}
+
+model Conquista {
+  id           String               @id @default(cuid())
+  titulo       String
+  descricao    String
+  progressoMax Int
+  usuarios     ProgressoConquista[]
+}
+
+model ProgressoConquista {
+  id           String   @id @default(cuid())
+  usuarioId    String
+  conquistaId  String
+  progresso    Int      @default(0)
+  concluida    Boolean  @default(false)
+  atualizadoEm DateTime @updatedAt
+
+  usuario   usuarios  @relation(fields: [usuarioId], references: [id_usuario])
+  conquista Conquista @relation(fields: [conquistaId], references: [id])
 }

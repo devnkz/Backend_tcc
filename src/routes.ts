@@ -91,6 +91,12 @@ import { ListNotificacaoByUserController } from './controllers/notificacoes/list
 import { DeleteNotificacaoController } from './controllers/notificacoes/deleteNotificacaoController';
 import { UpdateNotificacaoController } from './controllers/notificacoes/updateNotificacaoController';
 
+//imposts Conquistas
+import { CreateConquistaController } from './controllers/conquista/createConquistaController';
+import { AddProgressoController } from './controllers/conquista/addProgressoConquistaService';
+import { ListConquistasController } from './controllers/conquista/ListConquistaService';
+import { ListConquistasUsuarioController } from './controllers/conquista/ListConquistaByUser';
+
 interface RequestParams {
   id: string;
 }
@@ -343,5 +349,23 @@ export async function routes(
     fastify.delete("/penalidade/:id", async (request: FastifyRequest, reply: FastifyReply) => {
         return new DeletePenalidadeController().handle(request, reply)
     })
+
+    //rotas conquistas
+
+    fastify.get("/conquista", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListConquistasController().handle(request, reply);
+    });
+
+    fastify.get("/conquista/user/:userId", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ListConquistasUsuarioController().handle(request, reply);
+    });
+
+    fastify.post("/conquista", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new CreateConquistaController().handle(request, reply);
+    });
+
+    fastify.post("/conquista/progresso", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new AddProgressoController().handle(request, reply);
+    });
 
 }
