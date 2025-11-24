@@ -3,22 +3,22 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model componente {
-  id_componente   String     @id
+  id_componente   String     @id @default(uuid())
   nome_componente String
   fkId_curso      String
-  curso           curso      @relation(fields: [fkId_curso], references: [id_curso], map: "Componente_fkId_curso_fkey")
+  curso           curso      @relation(fields: [fkId_curso], references: [id_curso])
   pergunta        pergunta[]
 
-  @@index([fkId_curso], map: "Componente_fkId_curso_fkey")
+  @@index([fkId_curso])
 }
 
 model curso {
-  id_curso   String       @id
+  id_curso   String       @id @default(uuid())
   nome_curso String
   componente componente[]
   pergunta   pergunta[]
@@ -26,64 +26,64 @@ model curso {
 }
 
 model denuncias {
-  id_denuncia              String       @id
+  id_denuncia              String       @id @default(uuid())
   fkId_usuario             String
   fkId_conteudo_denunciado String
   descricao                String
   nivel_denuncia           Int
   status                   String       @default("pendente")
-  resultado                String
+  resultado                String?
   tipo_denuncia            String?
   dataCriacao_denuncia     DateTime     @default(now())
   tipo_conteudo            String
   fkId_usuario_conteudo    String
-  usuarios                 usuarios     @relation(fields: [fkId_usuario], references: [id_usuario], map: "Denuncias_fkId_usuario_fkey")
+  usuarios                 usuarios     @relation(fields: [fkId_usuario], references: [id_usuario])
   penalidades              penalidades?
 
-  @@index([fkId_usuario], map: "Denuncias_fkId_usuario_fkey")
+  @@index([fkId_usuario])
 }
 
 model grupo {
-  id_grupo     String     @id
+  id_grupo     String     @id @default(uuid())
   nome_grupo   String
   fkId_usuario String
-  usuarios     usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Grupo_fkId_usuario_fkey")
+  usuarios     usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
   membro       membro[]
   mensagem     mensagem[]
 
-  @@index([fkId_usuario], map: "Grupo_fkId_usuario_fkey")
+  @@index([fkId_usuario])
 }
 
 model membro {
-  id_membro    String   @id
+  id_membro    String   @id @default(uuid())
   fkId_usuario String
   fkId_grupo   String
-  grupo        grupo    @relation(fields: [fkId_grupo], references: [id_grupo], map: "Membro_fkId_grupo_fkey")
-  usuarios     usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Membro_fkId_usuario_fkey")
+  grupo        grupo    @relation(fields: [fkId_grupo], references: [id_grupo])
+  usuarios     usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
 
-  @@unique([fkId_usuario, fkId_grupo], map: "Membro_fkId_usuario_fkId_grupo_key")
-  @@index([fkId_grupo], map: "Membro_fkId_grupo_fkey")
+  @@unique([fkId_usuario, fkId_grupo])
+  @@index([fkId_grupo])
 }
 
 model mensagem {
-  id_mensagem          String     @id
+  id_mensagem          String     @id @default(uuid())
   mensagem             String
   fkId_usuario         String
   fkId_grupo           String
   dataCriacao_Mensagem DateTime   @default(now())
   replyToId            String?
-  grupo                grupo      @relation(fields: [fkId_grupo], references: [id_grupo], map: "Mensagem_fkId_grupo_fkey")
-  usuarios             usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Mensagem_fkId_usuario_fkey")
-  replyTo              mensagem?  @relation("mensagemTomensagem", fields: [replyToId], references: [id_mensagem], map: "Mensagem_replyToId_fkey")
+  grupo                grupo      @relation(fields: [fkId_grupo], references: [id_grupo])
+  usuarios             usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
+  replyTo              mensagem?  @relation("mensagemTomensagem", fields: [replyToId], references: [id_mensagem])
   replies              mensagem[] @relation("mensagemTomensagem")
 
-  @@index([fkId_grupo], map: "Mensagem_fkId_grupo_fkey")
-  @@index([fkId_usuario], map: "Mensagem_fkId_usuario_fkey")
-  @@index([replyToId], map: "Mensagem_replyToId_fkey")
+  @@index([fkId_grupo])
+  @@index([fkId_usuario])
+  @@index([replyToId])
 }
 
 model notificacoes {
-  id_notificacao          String   @id
+  id_notificacao          String   @id @default(uuid())
   fkId_usuario            String
   titulo                  String
   mensagem                String
@@ -91,72 +91,72 @@ model notificacoes {
   tipo                    String
   fkId_denuncia           String?
   dataCriacao_notificacao DateTime @default(now())
-  usuarios                usuarios @relation(fields: [fkId_usuario], references: [id_usuario], map: "Notificacoes_fkId_usuario_fkey")
+  usuarios                usuarios @relation(fields: [fkId_usuario], references: [id_usuario])
 
-  @@index([fkId_usuario], map: "Notificacoes_fkId_usuario_idx")
-  @@index([fkId_denuncia], map: "Notificacoes_fkId_denuncia_idx")
+  @@index([fkId_usuario])
+  @@index([fkId_denuncia])
 }
 
 model penalidades {
-  id_penalidade          String    @id
+  id_penalidade          String    @id @default(uuid())
   fkId_usuario           String
-  fkId_denuncia          String    @unique(map: "Penalidades_fkId_denuncia_key")
+  fkId_denuncia          String    @unique
   perder_credibilidade   Int
   descricao              String
   ativa                  Boolean   @default(true)
   dataCriacao_penalidade DateTime  @default(now())
   dataFim_penalidade     DateTime
   dataInicio_penalidade  DateTime
-  denuncias              denuncias @relation(fields: [fkId_denuncia], references: [id_denuncia], map: "Penalidades_fkId_denuncia_fkey")
-  usuarios               usuarios  @relation(fields: [fkId_usuario], references: [id_usuario], map: "Penalidades_fkId_usuario_fkey")
+  denuncias              denuncias @relation(fields: [fkId_denuncia], references: [id_denuncia])
+  usuarios               usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
 
-  @@index([fkId_usuario], map: "Penalidades_fkId_usuario_fkey")
+  @@index([fkId_usuario])
 }
 
 model pergunta {
-  id_pergunta              String     @id
+  id_pergunta              String     @id @default(uuid())
   pergunta                 String
   fkId_usuario             String
   fkId_componente          String
   dataCriacao_pergunta     DateTime   @default(now())
   fkId_curso               String
   dataAtualizacao_pergunta DateTime?
-  componente               componente @relation(fields: [fkId_componente], references: [id_componente], map: "Pergunta_fkId_componente_fkey")
-  curso                    curso      @relation(fields: [fkId_curso], references: [id_curso], map: "Pergunta_fkId_curso_fkey")
-  usuarios                 usuarios   @relation(fields: [fkId_usuario], references: [id_usuario], map: "Pergunta_fkId_usuario_fkey")
+  componente               componente @relation(fields: [fkId_componente], references: [id_componente])
+  curso                    curso      @relation(fields: [fkId_curso], references: [id_curso])
+  usuarios                 usuarios   @relation(fields: [fkId_usuario], references: [id_usuario])
   resposta                 resposta[]
 
-  @@index([fkId_componente], map: "Pergunta_fkId_componente_fkey")
-  @@index([fkId_curso], map: "Pergunta_fkId_curso_fkey")
-  @@index([fkId_usuario], map: "Pergunta_fkId_usuario_fkey")
+  @@index([fkId_componente])
+  @@index([fkId_curso])
+  @@index([fkId_usuario])
 }
 
 model resposta {
-  id_resposta              String    @id
+  id_resposta              String    @id @default(uuid())
   resposta                 String
   fkId_usuario             String
   fkId_pergunta            String
   dataCriacao_resposta     DateTime  @default(now())
   dataAtualizacao_resposta DateTime?
-  pergunta                 pergunta  @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade, map: "Resposta_fkId_pergunta_fkey")
-  usuarios                 usuarios  @relation(fields: [fkId_usuario], references: [id_usuario], map: "Resposta_fkId_usuario_fkey")
+  pergunta                 pergunta  @relation(fields: [fkId_pergunta], references: [id_pergunta], onDelete: Cascade)
+  usuarios                 usuarios  @relation(fields: [fkId_usuario], references: [id_usuario])
 
-  @@index([fkId_pergunta], map: "Resposta_fkId_pergunta_fkey")
-  @@index([fkId_usuario], map: "Resposta_fkId_usuario_fkey")
+  @@index([fkId_pergunta])
+  @@index([fkId_usuario])
 }
 
 model tipousuario {
-  id_tipousuario   String     @id
+  id_tipousuario   String     @id @default(uuid())
   nome_tipousuario String
   usuarios         usuarios[]
 }
 
 model usuarios {
-  id_usuario              String                   @id
+  id_usuario              String                   @id @default(uuid())
   nome_usuario            String
   apelido_usuario         String
   foto_perfil             String?
-  email_usuario           String                   @unique(map: "Usuarios_email_usuario_key")
+  email_usuario           String                   @unique
   senha_usuario           String
   fkIdTipoUsuario         String
   dataCriacao_usuario     DateTime                 @default(now())
@@ -171,12 +171,12 @@ model usuarios {
   pergunta                pergunta[]
   resposta                resposta[]
   codigoVerificacaoEmails CodigoVerificacaoEmail[]
-  curso                   curso?                   @relation(fields: [cursoId_curso], references: [id_curso], map: "Usuarios_cursoId_curso_fkey")
-  tipousuario             tipousuario              @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario], map: "Usuarios_fkIdTipoUsuario_fkey")
+  curso                   curso?                   @relation(fields: [cursoId_curso], references: [id_curso])
+  tipousuario             tipousuario              @relation(fields: [fkIdTipoUsuario], references: [id_tipousuario])
   progressoConquistas     ProgressoConquista[]
 
-  @@index([cursoId_curso], map: "Usuarios_cursoId_curso_fkey")
-  @@index([fkIdTipoUsuario], map: "Usuarios_fkIdTipoUsuario_fkey")
+  @@index([cursoId_curso])
+  @@index([fkIdTipoUsuario])
 }
 
 model CodigoVerificacaoEmail {
@@ -189,7 +189,7 @@ model CodigoVerificacaoEmail {
 }
 
 model Conquista {
-  id           String               @id @default(cuid())
+  id           String               @id @default(uuid())
   titulo       String
   descricao    String
   progressoMax Int
@@ -197,7 +197,7 @@ model Conquista {
 }
 
 model ProgressoConquista {
-  id           String   @id @default(cuid())
+  id           String   @id @default(uuid())
   usuarioId    String
   conquistaId  String
   progresso    Int      @default(0)
