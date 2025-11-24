@@ -21,14 +21,14 @@ class DeleteUserService {
         }
 
         // Remoção segura de usuário e dependências em transação
-        await prismaClient.$transaction(async (tx) => {
+        await prismaClient.$transaction(async (tx: any) => {
             // 0) Se o usuário criou grupos, limpar dependências e remover os grupos
             const gruposCriados = await tx.grupo.findMany({
                 where: { fkId_usuario: id },
                 select: { id_grupo: true },
             });
             if (gruposCriados.length > 0) {
-                const groupIds = gruposCriados.map((g) => g.id_grupo);
+                const groupIds = gruposCriados.map((g: any) => g.id_grupo);
                 // Quebra vínculos de replies entre mensagens desses grupos
                 await tx.mensagem.updateMany({
                     where: { fkId_grupo: { in: groupIds }, NOT: { replyToId: null } },
@@ -48,7 +48,7 @@ class DeleteUserService {
                 select: { id_mensagem: true },
             });
             if (mensagensDoUsuario.length > 0) {
-                const msgIds = mensagensDoUsuario.map((m) => m.id_mensagem);
+                const msgIds = mensagensDoUsuario.map((m: any) => m.id_mensagem);
                 await tx.mensagem.updateMany({
                     where: { replyToId: { in: msgIds } },
                     data: { replyToId: null },

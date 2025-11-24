@@ -10,7 +10,7 @@ datasource db {
 model componente {
   id_componente   String     @id @default(uuid())
   nome_componente String
-  fkId_curso      String
+  fkId_curso      String     @map("fkId_curso")
   curso           curso      @relation(fields: [fkId_curso], references: [id_curso])
   pergunta        pergunta[]
 

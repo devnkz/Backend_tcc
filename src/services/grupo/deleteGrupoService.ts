@@ -10,7 +10,7 @@ class deleteGrupoService {
       throw new Error("ID é obrigatório");
     }
     // Remoção segura com transação: limpa dependências antes do grupo
-    await prismaClient.$transaction(async (tx) => {
+    await prismaClient.$transaction(async (tx: any) => {
       // 1) Quebra vínculos de replies entre mensagens (self-relation)
       await tx.mensagem.updateMany({
         where: { fkId_grupo: id, NOT: { replyToId: null } },

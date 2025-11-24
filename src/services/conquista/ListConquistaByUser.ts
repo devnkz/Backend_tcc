@@ -20,7 +20,7 @@ class ListConquistasUsuarioService {
     });
 
     // organizar dados para retornar progresso mesmo se nunca começou
-    return conquistas.map(c => {
+    return conquistas.map(( c: any ) => {
       const registro = c.usuarios[0];
 
       const progresso = registro?.progresso ?? 0;

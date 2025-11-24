@@ -27,7 +27,7 @@ class ListDenunciaService {
 
         // Resolve texto do item denunciado (pergunta ou resposta) for each denúncia
         const resolved = await Promise.all(
-            denuncias.map(async (d) => {
+            denuncias.map(async (d: any) => {
                 let revisadoTipo: string | undefined = undefined;
                 let item_denunciado: string | undefined = undefined;
                 try {
