@@ -10,15 +10,22 @@ class VerifyCodeService {
   async execute({ codigo, email_usuario }: VerifyCodeInput) {
 
     const record = await prismaClient.codigoVerificacaoEmail.findFirst({
-      orderBy: { dataCriacao_codigo: "desc" },
-      where: { email_usuario },
+      orderBy: {
+        dataCriacao_codigo: "desc",
+      },
+      where: {
+        codigo,
+        email_usuario,
+      },
     });
 
-if (!record || record.codigo !== codigo) {
-  const err: any = new Error("Código inválido ou expirado.");
-  err.status = 401;
-  throw err;
-}
+    console.log("RECORD ENCONTRADO:", record?.codigo, "PARA EMAIL:", email_usuario, "COM CÓDIGO:", codigo);
+
+    if (!record) {
+      const err: any = new Error("Código inválido ou expirado.");
+      err.status = 401;
+      throw err;
+    }
 
     // Verificar expiração
     const now = new Date();
