@@ -19,7 +19,7 @@ class CreateUserService {
     email_usuario,
     senha_usuario,
     fkIdTipoUsuario,
-    credibilidade_usuario = 46,
+    credibilidade_usuario = 50,
   }: CreateUserProps) {
     if (!nome_usuario || !apelido_usuario || !email_usuario || !senha_usuario) {
       throw { status: 400, message: "Informações faltando" };
