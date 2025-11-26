@@ -40,6 +40,8 @@ export async function enviarTokenRedefinicao(email: string, token: string) {
   text: `Redefina sua senha com o link (15min): ${link}`,
 });
 
+console.log("Link de redefinição:", link);
+
     if (error) throw error;
 
     console.log("Email de redefinição enviado:", data);
