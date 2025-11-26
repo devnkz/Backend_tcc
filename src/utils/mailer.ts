@@ -37,7 +37,7 @@ export async function enviarTokenRedefinicao(email: string, token: string) {
         <br/><br/>
         <p>Se você não fez essa solicitação, ignore este email.</p>
       `,
-      text: `Use o link para redefinir sua senha (15min): ${link}`,
+      text: `Use o link para redefinir sua senha (15min)`,
     });
 
     if (error) throw error;
