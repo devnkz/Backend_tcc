@@ -17,7 +17,7 @@ RUN npx prisma generate
 # Agora copia o resto do projeto
 COPY . .
 
-# Compila o TypeScript
+RUN chmod +x node_modules/.bin/tsc
 RUN npx tsc
 
 EXPOSE 3000
