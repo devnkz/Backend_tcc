@@ -2,21 +2,22 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copia só o essencial primeiro para cache de build
+# Copia apenas o package.json para build mais rápido
 COPY package*.json ./
 
+# Instala TUDO, incluindo devDependencies
+ENV NODE_ENV=development
 RUN npm install
 
-# Copia apenas o schema ANTES do generate
+# Copia o schema antes do generate
 COPY prisma ./prisma
 
-# Gera o Prisma Client
 RUN npx prisma generate
 
 # Agora copia o resto do projeto
 COPY . .
 
-# Compila TypeScript
+# Compila o TypeScript
 RUN npx tsc
 
 EXPOSE 3000
