@@ -33,7 +33,6 @@ export async function enviarTokenRedefinicao(email: string, token: string) {
       html: `
         <p>Você solicitou uma redefinição de senha.</p>
         <p>Clique no link abaixo para criar uma nova senha (válido por 15 minutos):</p>
-        <a href="${link}" target="_blank">${link}</a>
         <br/><br/>
         <p>Se você não fez essa solicitação, ignore este email.</p>
       `,
