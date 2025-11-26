@@ -25,7 +25,9 @@
     "@types/node": "^22.15.30",
     "@types/socket.io": "^3.0.1",
     "prisma": "^6.19.0",
-    "typescript": "^5.8.3"
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@fastify/cors": "^11.0.1",
