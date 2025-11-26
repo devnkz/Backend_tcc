@@ -21,3 +21,31 @@ export async function enviarCodigo(email: string, codigo: string) {
     return { sucesso: false, erro: err };
   }
 }
+
+export async function enviarTokenRedefinicao(email: string, token: string) {
+  try {
+    const link = `${process.env.FRONTEND_URL}/forgot-password/reset-password?token=${token}`;
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || "suporte@etecestudare.top",
+      to: [email],
+      subject: "Redefinição de senha",
+      html: `
+        <p>Você solicitou uma redefinição de senha.</p>
+        <p>Clique no link abaixo para criar uma nova senha (válido por 15 minutos):</p>
+        <a href="${link}" target="_blank">${link}</a>
+        <br/><br/>
+        <p>Se você não fez essa solicitação, ignore este email.</p>
+      `,
+      text: `Use o link para redefinir sua senha (15min): ${link}`,
+    });
+
+    if (error) throw error;
+
+    console.log("Email de redefinição enviado:", data);
+    return { sucesso: true };
+  } catch (err) {
+    console.error("Erro ao enviar email de redefinição:", err);
+    return { sucesso: false, erro: err };
+  }
+}

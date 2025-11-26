@@ -9,6 +9,11 @@ import { authenticate } from './middleware/auth';
 
 import { VerifyCodeController } from './controllers/VerificarCodigoEmail';
 
+//imports para recuperar senha
+
+import { ForgotPasswordController } from './controllers/redefinirSenhaController';
+import { redefinirSenhaController } from './controllers/criarNovaSenhaController';
+
 //imports Usuarios
 
 import { CreateUserController } from './controllers/users/createUserController';
@@ -118,6 +123,15 @@ export async function routes(
     //Rota de Verificar Codigo Email
     fastify.post("/verify-code", async (request: FastifyRequest, reply: FastifyReply) => {
         return new VerifyCodeController().handle(request, reply)
+    });
+
+    //Rota de Recuperar Senha
+    fastify.post("/forgot-password", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ForgotPasswordController().handle(request, reply)
+    });
+
+    fastify.post("/forgot-password/reset-password", async (request: FastifyRequest, reply: FastifyReply) => {
+        return redefinirSenhaController(request, reply);
     });
 
     //Rotas de Usuario
