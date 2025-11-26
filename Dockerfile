@@ -1,17 +1,24 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /app
 
+# Copia só o essencial primeiro para cache de build
 COPY package*.json ./
+
 RUN npm install
 
-# Gera o Prisma Client dentro do container
+# Copia apenas o schema ANTES do generate
+COPY prisma ./prisma
+
+# Gera o Prisma Client
 RUN npx prisma generate
 
+# Agora copia o resto do projeto
 COPY . .
 
-# Build TS
+# Compila TypeScript
 RUN npx tsc
 
 EXPOSE 3000
+
 CMD ["node", "dist/server.js"]
