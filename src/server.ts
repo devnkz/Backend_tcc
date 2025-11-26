@@ -17,7 +17,7 @@ process.on('unhandledRejection', (reason) => {
   console.error('UNHANDLED REJECTION', reason);
 });
 
-const app = fastify({ logger: true })
+const app = fastify({ logger: false })
 
 const start = async () => {
   await app.register(fastifyCors, {

@@ -1,6 +1,7 @@
 
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { VerifyCodeService } from "../services/VerificarCodigoEmail";
+import { Console } from "console";
 
 interface verifyCode{
     codigo: string,
@@ -13,12 +14,16 @@ class VerifyCodeController {
       codigo, email_usuario
     } = request.body as verifyCode;
 
+    console.log("Recebido para verificação - Email:", email_usuario, "Código:", codigo);
+
     const acceptVerifyCode = new VerifyCodeService();
 
     try {
       const verifyCode = await acceptVerifyCode.execute({
         codigo, email_usuario
       });
+
+      console.log("Código verificado com sucesso:", verifyCode);
 
       return reply.status(201).send(verifyCode);
 

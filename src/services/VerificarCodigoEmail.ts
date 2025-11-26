@@ -14,12 +14,10 @@ class VerifyCodeService {
         dataCriacao_codigo: "desc",
       },
       where: {
-        codigo,
-        email_usuario,
+        codigo: codigo,
+        email_usuario: email_usuario,
       },
     });
-
-    console.log("RECORD ENCONTRADO:", record?.codigo, "PARA EMAIL:", email_usuario, "COM CÓDIGO:", codigo);
 
     if (!record) {
       const err: any = new Error("Código inválido ou expirado.");
