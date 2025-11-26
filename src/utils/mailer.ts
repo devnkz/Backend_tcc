@@ -33,11 +33,11 @@ export async function enviarTokenRedefinicao(email: string, token: string) {
   html: `
     <p>Você solicitou uma redefinição de senha.</p>
     <p>Clique no link abaixo para criar uma nova senha (válido por 15 minutos):</p>
-    <a href="${link}" target="_blank">${link}</a>
+    <a href="${link}" target="_blank">Clique aqui para redefinir sua senha</a>
     <br/><br/>
     <p>Se você não fez essa solicitação, ignore este email.</p>
   `,
-  text: `Redefina sua senha com o link (15min): ${link}`,
+  text: `Redefina sua senha com o link (15min)`,
 });
 
     if (error) throw error;
