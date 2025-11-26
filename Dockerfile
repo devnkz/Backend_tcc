@@ -4,12 +4,11 @@ WORKDIR /app
 
 COPY package*.json ./
 
-# Instalar TODAS as dependências, inclusive devDependencies
 RUN npm install
 
 COPY . .
 
-# Build TypeScript
+RUN chmod +x node_modules/.bin/tsc
 RUN npx tsc
 
 EXPOSE 3000
