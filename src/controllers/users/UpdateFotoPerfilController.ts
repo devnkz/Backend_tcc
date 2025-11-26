@@ -9,7 +9,7 @@ export class UpdateFotoPerfilController {
       return reply.status(400).send({ error: "Nenhum arquivo enviado" });
     }
 
-    const foto_perfil = `http://localhost:3333/uploads/${request.file.filename}`;
+    const foto_perfil = `backendtcc-production-7c03.up.railway.app/uploads/${request.file.filename}`;
 
     const service = new UpdateFotoPerfilService();
     const user = await service.execute({ id, foto_perfil });
