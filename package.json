@@ -4,14 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "dev": "tsx watch src/server.ts",
-  "build": "npx tsc",
-  "start": "node dist/server.js",
-  "prisma:generate": "prisma generate",
-  "prisma:migrate": "prisma migrate dev --name init",
-  "prisma:seed": "prisma db seed",
-  "vercel-build": "npx prisma generate && npx prisma migrate deploy"
-},
+    "dev": "tsx watch src/server.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:seed": "prisma db seed",
+    "vercel-build": "npx prisma generate && npx prisma migrate deploy"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -28,7 +26,6 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
-    "typescript": "^5.8.3",
     "@fastify/cors": "^11.0.1",
     "@fastify/multipart": "^9.2.1",
     "@fastify/static": "^8.2.0",
