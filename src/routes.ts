@@ -27,6 +27,7 @@ import { DeleteFotoPerfilController } from './controllers/users/deleteFotoPerfil
 import { CheckEmailController } from './controllers/users/checkEmailController';
 import { CheckTextController } from './controllers/users/checkTextController';
 import { CheckApelidoController } from './controllers/users/checkApelidoController';
+import { ValidarRespostaController } from './controllers/validarResposta';
 
 //imports Perguntas
 
@@ -112,6 +113,11 @@ export async function routes(
     // Healthcheck simples para verificar disponibilidade do servidor
     fastify.get("/health", async (_req: FastifyRequest, reply: FastifyReply) => {
         return reply.code(200).send({ status: "ok" });
+    });
+
+    // Rota de validar resposta
+    fastify.post("/validar-resposta", async (request: FastifyRequest, reply: FastifyReply) => {
+        return new ValidarRespostaController().handle(request, reply);
     });
 
     //Rotas de Verificação de Token

@@ -137,6 +137,7 @@ model resposta {
   resposta                 String
   visibilidade_resposta    Boolean   @default(true)
   fkId_usuario             String
+  status_resposta          String    @default("comum")
   fkId_pergunta            String
   dataCriacao_resposta     DateTime  @default(now())
   dataAtualizacao_resposta DateTime?
