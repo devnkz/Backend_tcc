@@ -116,6 +116,7 @@ model penalidades {
 model pergunta {
   id_pergunta              String     @id @default(uuid())
   pergunta                 String
+  visibilidade_pergunta    Boolean    @default(true)
   fkId_usuario             String
   fkId_componente          String
   dataCriacao_pergunta     DateTime   @default(now())
@@ -134,6 +135,7 @@ model pergunta {
 model resposta {
   id_resposta              String    @id @default(uuid())
   resposta                 String
+  visibilidade_resposta    Boolean   @default(true)
   fkId_usuario             String
   fkId_pergunta            String
   dataCriacao_resposta     DateTime  @default(now())

@@ -7,10 +7,11 @@ class UpdatePerguntaController {
         // Recuperar `id` da URL e os demais dados do corpo
         const { id } = request.params as { id: string };
         const userId: string = (request as any).user?.id;
-        const { pergunta, fkId_componente, fkId_curso } = request.body as { 
+        const { pergunta, fkId_componente, fkId_curso, visibilidade_pergunta } = request.body as { 
             pergunta: string; 
             fkId_componente: string; 
             fkId_curso: string;
+            visibilidade_pergunta: boolean;
         };
 
         const Pergunta = new UpdatePerguntaService();
@@ -19,7 +20,8 @@ class UpdatePerguntaController {
             userId, 
             pergunta, 
             fkId_componente,
-            fkId_curso
+            fkId_curso,
+            visibilidade_pergunta
         });
 
         reply.send(updatedPergunta);

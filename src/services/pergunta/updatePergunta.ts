@@ -7,10 +7,11 @@ interface UpdatePerguntaProps {
     pergunta: string;
     fkId_componente?: string;
     fkId_curso?: string;
+    visibilidade_pergunta?: boolean;
 }
 
 class UpdatePerguntaService {
-    async execute({ id, userId, pergunta, fkId_componente, fkId_curso }: UpdatePerguntaProps) {
+    async execute({ id, userId, pergunta, fkId_componente, fkId_curso, visibilidade_pergunta }: UpdatePerguntaProps) {
         // Buscar pergunta pelo ID
         const findPergunta = await prismaClient.pergunta.findUnique({
             where: { id_pergunta: id }
@@ -20,10 +21,6 @@ class UpdatePerguntaService {
             throw new Error("Pergunta não encontrada");
         }
 
-        if(findPergunta.fkId_usuario !== userId){
-            throw new Error("Você não tem permissão para atualizar esta pergunta");
-        }
-
         const perguntaValidada = validarTextoOuErro(pergunta);
 
         // Atualizar pergunta e retornar os dados modificados
@@ -31,6 +28,9 @@ class UpdatePerguntaService {
             where: { id_pergunta: id },
             data: {
                 pergunta: perguntaValidada.textoFiltrado,
+                visibilidade_pergunta: visibilidade_pergunta !== undefined
+                ? visibilidade_pergunta
+                : findPergunta.visibilidade_pergunta,
                 fkId_componente: fkId_componente && fkId_componente.trim() !== "" 
                 ? fkId_componente 
                 : findPergunta.fkId_componente,
