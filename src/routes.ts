@@ -36,6 +36,7 @@ import { ListPeguntaController } from './controllers/pergunta/listPergunta';
 import { ListPerguntaByIdUserController } from './controllers/pergunta/listPerguntaByIdUser';
 import { DeletePerguntaController } from './controllers/pergunta/deletePergunta';
 import { UpdatePerguntaController } from './controllers/pergunta/updatePergunta';
+import { UpdateFotoPerguntaController } from './controllers/pergunta/updateFotoPergunta';
 
 //imports Tipo Usuario
 
@@ -215,6 +216,10 @@ export async function routes(
 
     fastify.put("/pergunta/:id", { preHandler: [authenticate] } ,async (request: FastifyRequest, reply: FastifyReply) => {
         return new UpdatePerguntaController().handle(request, reply)
+    })
+
+    fastify.post("/pergunta/foto/:id", { preHandler: upload.single("foto_pergunta") },async (request: FastifyRequest, reply: FastifyReply) => {
+        return new UpdateFotoPerguntaController().handle(request, reply)
     })
 
     //Rotas de Componente

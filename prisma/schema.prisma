@@ -118,6 +118,7 @@ model pergunta {
   pergunta                 String
   visibilidade_pergunta    Boolean    @default(true)
   fkId_usuario             String
+  foto_pergunta            String?
   fkId_componente          String
   dataCriacao_pergunta     DateTime   @default(now())
   fkId_curso               String

@@ -6,6 +6,7 @@ class CreatePerguntaController {
     const { fkId_usuario, pergunta, fkId_componente, fkId_curso } = request.body as {
       fkId_usuario: string;
       pergunta: string;
+      imagem: string
       fkId_curso: string;
       fkId_componente: string;
     };

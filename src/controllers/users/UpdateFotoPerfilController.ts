@@ -9,7 +9,7 @@ export class UpdateFotoPerfilController {
       return reply.status(400).send({ error: "Nenhum arquivo enviado" });
     }
   
-    const foto_perfil = `https://backend-tcc-rosy.vercel.app/uploads/${request.file.filename}`;
+    const foto_perfil = `${process.env.URL_BACKEND}/uploads/${request.file.filename}`;
 
     const service = new UpdateFotoPerfilService();
     const user = await service.execute({ id, foto_perfil });
