@@ -9,7 +9,7 @@ export class UpdateFotoPerguntaController {
       return reply.status(400).send({ error: "Nenhum arquivo enviado" });
     }
   
-    const foto_pergunta = `http://localhost:3333/uploads/${request.file.filename}`;
+    const foto_pergunta = `${process.env.URL_BACKEND}/uploads/${request.file.filename}`;
 
     const service = new UpdateFotoPerguntaService();
     const user = await service.execute({ id, foto_pergunta });
